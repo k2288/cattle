@@ -1,5 +1,6 @@
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:cattle/components/dashboard/dashboard.dart';
+import 'package:cattle/components/newAnimal/new-animal.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/fab_bottom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       body: Dashboard(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: () { },
+        onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => NewAnimal())); },
         tooltip: 'Increment',
         child: Icon(Icons.add),
         elevation: 2.0,

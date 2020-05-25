@@ -36,6 +36,12 @@ class CattleApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         textTheme: TextTheme(
           display1: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 13),
+          display2: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 15),
+          display3: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 30),//detail
+          display4: TextStyle(color: Colors.black,fontSize: 20),//detail
+
+          button:TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20) ,
+
           subtitle:TextStyle(color: Colors.black,fontSize: 13)
         )
 

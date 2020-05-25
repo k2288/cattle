@@ -1,5 +1,6 @@
 import 'package:cattle/components/dashboard/main_dashboard_card.dart';
 import 'package:cattle/components/dashboard/summary_card.dart';
+import 'package:cattle/components/list/list.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatefulWidget {
@@ -34,10 +35,10 @@ class _DashboardState extends State<Dashboard> {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 children: <Widget>[
-                  MainDashboardCard(Color(0xfffd6768),"15","تعداد حیوانات","assets/images/total_cow.svg"),
-                  MainDashboardCard(Color(0xff109da4),"08","گاوهای شیری","assets/images/milking_cow.svg"),
-                  MainDashboardCard(Color(0xfff0981a),"02","گاوهای خشک","assets/images/dry_cow.svg"),
-                  MainDashboardCard(Color(0xff48294b),"20.00"," میانگین شیر/گاو (Kg)","assets/images/milk.svg"),
+                  MainDashboardCard(Color(0xfffd6768),"15","تعداد حیوانات","assets/images/total_cow.svg",_onMainCardClick),
+                  MainDashboardCard(Color(0xff109da4),"08","گاوهای شیری","assets/images/milking_cow.svg",_onMainCardClick),
+                  MainDashboardCard(Color(0xfff0981a),"02","گاوهای خشک","assets/images/dry_cow.svg",_onMainCardClick),
+                  MainDashboardCard(Color(0xff48294b),"20.00"," میانگین شیر/گاو (Kg)","assets/images/milk.svg",_onMainCardClick),
                 ],
               ),
               Text("خلاصه باروری",style: Theme.of(context).textTheme.title),
@@ -62,6 +63,13 @@ class _DashboardState extends State<Dashboard> {
           ),
         )
       ],
+    );
+  }
+
+  _onMainCardClick(){
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CattleList(title: "حیوانات",)),
     );
   }
 }

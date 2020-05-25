@@ -62,7 +62,18 @@ flutter:
    - assets/images/cow.jpeg
    - assets/images/milking.svg
    - assets/images/fertilization.svg
-   - assets/images/heart.svg
+
+   
+   - assets/images/state/bull.png
+   - assets/images/state/calf.png
+   - assets/images/state/cow.png
+   - assets/images/state/heifer.png
+
+   - assets/images/state/breeding.png
+   - assets/images/state/calved.png
+   - assets/images/state/onmilking.png
+   - assets/images/state/pragnent.png
+   - assets/images/state/weaned.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -12,7 +12,7 @@ class Td extends StatelessWidget {
       margin: EdgeInsets.all(0),
       padding: EdgeInsets.only(top:20,bottom:20),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(_value,style: Theme.of(context).textTheme.display2,),
           // Icon(FontAwesomeIcons.sort,color: Colors.white,)

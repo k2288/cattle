@@ -1,15 +1,19 @@
+import 'dart:math';
+
 import 'package:cattle/components/detail/detail.dart';
 import 'package:cattle/components/list/td.dart';
 import 'package:cattle/components/list/th.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ListItem{
   final String _state;
   final String _earId;
   final String _gene;
   final String _age;
-  ListItem(this._state,this._earId,this._gene,this._age);
+  final String _service;
+  ListItem(this._state,this._earId,this._gene,this._age,this._service);
 }
 
 class CattleList extends StatefulWidget {
@@ -27,8 +31,13 @@ class _CattleListState extends State<CattleList> {
   bool _isSearching = false;
   String searchQuery = "";
 
-  final List<ListItem> _items=List<ListItem>.generate(100,(i){
-    return ListItem(faker.currency.code(),faker.guid.guid().substring(0,3),faker.person.firstName(),faker.date.year());
+  List<String> state=["assets/images/state/bull.png","assets/images/state/calf.png",
+  "assets/images/state/cow.png","assets/images/state/heifer.png"];
+
+  static List<String> service=["breeding","calved","onmilking","pragnent","weaned"];
+
+  final List<ListItem> _items=List<ListItem>.generate(50,(i){
+    return ListItem(faker.currency.code(),faker.guid.guid().substring(0,3),faker.person.firstName(),faker.date.year(),service[Random().nextInt(5)]);
   } );
 
   @override
@@ -40,25 +49,47 @@ class _CattleListState extends State<CattleList> {
         title: _isSearching?_buildSearchField(): Text(widget.title),
         actions: _buildActions(),
       ),
-      body:Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top:10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Flexible(flex: 1, child: Th("وضعیت")),
-                Flexible(flex: 1, child: Th("ش.گوش")),
-                Flexible(flex: 1, child: Th("ژن")),
-                Flexible(flex: 1, child: Th("سن")),
-              ],
-            ),
-          ),
-          Expanded(
+      body:Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: 
+          // Container(
+          //   margin: EdgeInsets.only(top:10),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: <Widget>[
+          //       Flexible(flex: 1, child: Th("وضعیت")),
+          //       Flexible(flex: 1, child: Th("ش.گوش")),
+          //       Flexible(flex: 1, child: Th("ژن")),
+          //       Flexible(flex: 1, child: Th("سن")),
+          //     ],
+          //   ),
+          // ),
+          Center(
             child: ListView.builder(
+
               itemBuilder: (BuildContext buildContext,int index){
                 ListItem item=_items[index];
                 return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey[200],
+                        blurRadius: .5,
+                        spreadRadius: .2,
+                        offset: Offset(
+                          1,
+                          1
+                        )
+                      )
+                    ]
+                  ),
+                  margin: EdgeInsets.only(
+                    left: 5,
+                    right: 5,
+                    top:5
+                  ),
                   child: InkWell(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,16 +98,58 @@ class _CattleListState extends State<CattleList> {
                             // width: 10,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Color(0xff369ee5)
+                              // color: Color(0xff369ee5)
                             ),
-                            margin: EdgeInsets.all(5),
+                            margin: EdgeInsets.only(
+                              bottom: 5
+                            ),
                             padding: EdgeInsets.all(10),
-                            child: Center(child: Baseline(baseline: 14, baselineType: TextBaseline.alphabetic, child: Text(item._state,style: Theme.of(context).textTheme.display1,),) ,) ,
+                            child: Image.asset(state[Random().nextInt(3)])
+                            // Center(child: Baseline(baseline: 14, baselineType: TextBaseline.alphabetic, child: Text(item._state,style: Theme.of(context).textTheme.display1,),) ,) ,
                           )
                         ),
-                        Flexible(flex: 1, child: Td(item._earId)),
-                        Flexible(flex: 1, child: Td(item._gene)),
-                        Flexible(flex: 1, child: Td(item._age)),
+                        Flexible(flex: 2, child:Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.all(0),
+                          padding: EdgeInsets.only(top:20,bottom:20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(item._gene,style: Theme.of(context).textTheme.display3,),
+                              Text(item._earId,style: Theme.of(context).textTheme.display2,),
+                              
+                              // Icon(FontAwesomeIcons.sort,color: Colors.white,)
+                            ],
+                          )
+                        )),
+                        Flexible(flex: 1, child: Container(
+                            // width: 10,
+                            // decoration: BoxDecoration(
+                            //   shape: BoxShape.circle,
+                            //   color: Color(0xff369ee5)
+                            // ),
+                            // margin: EdgeInsets.all(5),
+                            padding: EdgeInsets.all(15),
+                            child: Image.asset("assets/images/state/${item._service}.png")
+                            // Center(child: Baseline(baseline: 14, baselineType: TextBaseline.alphabetic, child: Text(item._state,style: Theme.of(context).textTheme.display1,),) ,) ,
+                          )
+                        ),
+                        Flexible(flex: 1, child:Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.all(0),
+                          padding: EdgeInsets.only(top:20,bottom:20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(":"+item._service,style: Theme.of(context).textTheme.display3,),
+                              Text(item._age,style: Theme.of(context).textTheme.display2,),
+                              
+                              // Icon(FontAwesomeIcons.sort,color: Colors.white,)
+                            ],
+                          )
+                        )),
                       ],
                     ),
                     onTap: _onListItemClick,
@@ -86,7 +159,6 @@ class _CattleListState extends State<CattleList> {
               itemCount: _items.length,
             )
           )
-        ],
       )
     );
   }
@@ -131,6 +203,10 @@ class _CattleListState extends State<CattleList> {
     return <Widget>[
       IconButton(
         icon: const Icon(Icons.search),
+        onPressed: _startSearch,
+      ),
+      IconButton(
+        icon: const Icon(Icons.sentiment_very_satisfied),
         onPressed: _startSearch,
       ),
     ];

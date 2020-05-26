@@ -1,11 +1,8 @@
 import 'dart:math';
-
 import 'package:cattle/components/detail/detail.dart';
-import 'package:cattle/components/list/td.dart';
-import 'package:cattle/components/list/th.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 class ListItem{
   final String _state;
@@ -37,7 +34,10 @@ class _CattleListState extends State<CattleList> {
   static List<String> service=["breeding","calved","onmilking","pragnent","weaned"];
 
   final List<ListItem> _items=List<ListItem>.generate(50,(i){
-    return ListItem(faker.currency.code(),faker.guid.guid().substring(0,3),faker.person.firstName(),faker.date.year(),service[Random().nextInt(5)]);
+    DateTime date= faker.date.dateTime();
+    return ListItem(faker.currency.code(),faker.guid.guid().substring(0,3),faker.person.firstName(),
+    "${date.month.toString()} ماه ${date.day} روز",
+    service[Random().nextInt(5)]);
   } );
 
   @override
@@ -144,7 +144,7 @@ class _CattleListState extends State<CattleList> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(":"+item._service,style: Theme.of(context).textTheme.display3,),
-                              Text(item._age,style: Theme.of(context).textTheme.display2,),
+                              Text(item._age,style:TextStyle(fontSize: 12)),
                               
                               // Icon(FontAwesomeIcons.sort,color: Colors.white,)
                             ],

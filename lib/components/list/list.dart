@@ -36,7 +36,7 @@ class _CattleListState extends State<CattleList> {
   final List<ListItem> _items=List<ListItem>.generate(50,(i){
     DateTime date= faker.date.dateTime();
     return ListItem(faker.currency.code(),faker.guid.guid().substring(0,3),faker.person.firstName(),
-    "${date.month.toString()} ماه ${date.day} روز",
+    "${date.month.toString()}ماه ${date.day}روز",
     service[Random().nextInt(5)]);
   } );
 
@@ -72,7 +72,7 @@ class _CattleListState extends State<CattleList> {
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(5),
+                    // borderRadius: BorderRadius.circular(5),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey[200],
@@ -86,15 +86,15 @@ class _CattleListState extends State<CattleList> {
                     ]
                   ),
                   margin: EdgeInsets.only(
-                    left: 5,
-                    right: 5,
-                    top:5
+                    // left: 5,
+                    // right: 5,
+                    top:1
                   ),
                   child: InkWell(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Flexible(flex: 1, child: Container(
+                        Flexible(flex: 2, child: Container(
                             // width: 10,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -108,7 +108,7 @@ class _CattleListState extends State<CattleList> {
                             // Center(child: Baseline(baseline: 14, baselineType: TextBaseline.alphabetic, child: Text(item._state,style: Theme.of(context).textTheme.display1,),) ,) ,
                           )
                         ),
-                        Flexible(flex: 2, child:Container(
+                        Flexible(flex: 3, child:Container(
                           width: double.infinity,
                           margin: EdgeInsets.all(0),
                           padding: EdgeInsets.only(top:20,bottom:20),
@@ -123,7 +123,7 @@ class _CattleListState extends State<CattleList> {
                             ],
                           )
                         )),
-                        Flexible(flex: 1, child: Container(
+                        Flexible(flex: 2, child: Container(
                             // width: 10,
                             // decoration: BoxDecoration(
                             //   shape: BoxShape.circle,
@@ -135,16 +135,16 @@ class _CattleListState extends State<CattleList> {
                             // Center(child: Baseline(baseline: 14, baselineType: TextBaseline.alphabetic, child: Text(item._state,style: Theme.of(context).textTheme.display1,),) ,) ,
                           )
                         ),
-                        Flexible(flex: 1, child:Container(
+                        Flexible(flex: 2, child:Container(
                           width: double.infinity,
                           margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.only(top:20,bottom:20),
+                          padding: EdgeInsets.only(top:20,bottom:20,left:10),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(":"+item._service,style: Theme.of(context).textTheme.display3,),
-                              Text(item._age,style:TextStyle(fontSize: 12)),
+                              Center(child:Text(""+item._service,style: Theme.of(context).textTheme.display3,)),
+                              Center(child: Text(item._age,style:TextStyle(fontSize: 12)))
                               
                               // Icon(FontAwesomeIcons.sort,color: Colors.white,)
                             ],

@@ -1,17 +1,16 @@
 import 'dart:math';
+
 import 'package:cattle/components/detail/detail.dart';
+import 'package:cattle/models/livestock.dart';
+import 'package:cattle/repositories/LivstockRespository.dart';
+import 'package:cattle/utils/SettingsProvider.dart';
+import 'package:cattle/utils/api/Response.dart';
+import 'package:cattle/widgets/PinSnackBar.dart';
+import 'package:cattle/widgets/fab_bottom_navigation/pin_image.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
-
-
-class ListItem{
-  final String _state;
-  final String _earId;
-  final String _gene;
-  final String _age;
-  final String _service;
-  ListItem(this._state,this._earId,this._gene,this._age,this._service);
-}
+import 'package:shamsi_date/shamsi_date.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class CattleList extends StatefulWidget {
 
@@ -27,22 +26,58 @@ class _CattleListState extends State<CattleList> {
   TextEditingController _searchQueryController = TextEditingController();
   bool _isSearching = false;
   String searchQuery = "";
+  int _pageSize=10,_offset=-10;
+  List<Livestock> _livestockList=new List<Livestock>();
+  LivestockRepository _livestockRepository;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  SettingsData _settingData;
 
-  List<String> state=["assets/images/state/bull.png","assets/images/state/calf.png",
-  "assets/images/state/cow.png","assets/images/state/heifer.png"];
+  
 
-  static List<String> service=["breeding","calved","onmilking","pragnent","weaned"];
+  _CattleListState(){
+    _livestockRepository=LivestockRepository();
+  }
 
-  final List<ListItem> _items=List<ListItem>.generate(50,(i){
-    DateTime date= faker.date.dateTime();
-    return ListItem(faker.currency.code(),faker.guid.guid().substring(0,3),faker.person.firstName(),
-    "${date.month.toString()}ماه ${date.day}روز",
-    service[Random().nextInt(5)]);
-  } );
+  @override
+  void initState() {
+    loadLivestock();
+    _settingData= SettingsProvider().getSettings();
+    super.initState();
+  }
+
+  Future<void> loadLivestock([bool isRefresh=false])async{
+    if(isRefresh){
+      setState(() {
+        _offset=-10;
+        _livestockList.clear();
+      });
+    }
+
+
+
+    var response =await _livestockRepository.getLivestockList({
+      "offset":(_offset+_pageSize).toString(),
+      "pageSize":_pageSize.toString()
+    });
+    if(response.status==Status.COMPLETED){
+      setState(() {
+        _livestockList.addAll(response.data.content) ;
+      });
+
+    }else{
+      _scaffoldKey.currentState.showSnackBar(PinSnackBar(response.message).get());
+    }
+
+  }
+
+  String relativeDate(DateTime dateTime){
+    return timeago.format(dateTime,locale: 'fa');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: BackButton(),
         centerTitle: true,
@@ -52,23 +87,20 @@ class _CattleListState extends State<CattleList> {
       body:Container(
         color: Theme.of(context).scaffoldBackgroundColor,
         child: 
-          // Container(
-          //   margin: EdgeInsets.only(top:10),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: <Widget>[
-          //       Flexible(flex: 1, child: Th("وضعیت")),
-          //       Flexible(flex: 1, child: Th("ش.گوش")),
-          //       Flexible(flex: 1, child: Th("ژن")),
-          //       Flexible(flex: 1, child: Th("سن")),
-          //     ],
-          //   ),
-          // ),
-          Center(
+          RefreshIndicator(
+            onRefresh:()=>loadLivestock(true) ,
             child: ListView.builder(
-
+              itemCount: _livestockList.length,
               itemBuilder: (BuildContext buildContext,int index){
-                ListItem item=_items[index];
+                Livestock item=_livestockList[index];
+                DateTime tempDate;
+                if(item.state!=null){
+                  tempDate= DateTime.parse(item.lastStateDate);
+                }else{
+                  tempDate= DateTime.parse(item.birthDate);
+                }
+                
+                String birthDate="${tempDate.year}/${tempDate.month.toString().padLeft(2,"0")}/${tempDate.day.toString().padLeft(2,"0")}";
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -104,7 +136,7 @@ class _CattleListState extends State<CattleList> {
                               bottom: 5
                             ),
                             padding: EdgeInsets.all(10),
-                            child: Image.asset(state[Random().nextInt(3)])
+                            child: item.gender!=null && _settingData.livestockType.contains(item.gender)  ? PinImage(url: "/assets/type/${item.gender}.png"):Container()
                             // Center(child: Baseline(baseline: 14, baselineType: TextBaseline.alphabetic, child: Text(item._state,style: Theme.of(context).textTheme.display1,),) ,) ,
                           )
                         ),
@@ -116,8 +148,8 @@ class _CattleListState extends State<CattleList> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(item._gene,style: Theme.of(context).textTheme.display3,),
-                              Text(item._earId,style: Theme.of(context).textTheme.display2,),
+                              Text(item.gender,style: Theme.of(context).textTheme.display3,),
+                              Text(item.tagNo,style: Theme.of(context).textTheme.display2,),
                               
                               // Icon(FontAwesomeIcons.sort,color: Colors.white,)
                             ],
@@ -131,20 +163,21 @@ class _CattleListState extends State<CattleList> {
                             // ),
                             // margin: EdgeInsets.all(5),
                             padding: EdgeInsets.all(15),
-                            child: Image.asset("assets/images/state/${item._service}.png")
+                            child: item.state!=null && _settingData.livestockState.contains(item.state)  ? PinImage(url: "/assets/states/${item.state}.png"):Container(),
+                            // Image.asset("assets/images/state/${item.state}.png")
                             // Center(child: Baseline(baseline: 14, baselineType: TextBaseline.alphabetic, child: Text(item._state,style: Theme.of(context).textTheme.display1,),) ,) ,
                           )
                         ),
                         Flexible(flex: 2, child:Container(
                           width: double.infinity,
                           margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.only(top:20,bottom:20,left:10),
+                          padding: EdgeInsets.only(top:20,bottom:20,left:5),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Center(child:Text(""+item._service,style: Theme.of(context).textTheme.display3,)),
-                              Center(child: Text(item._age,style:TextStyle(fontSize: 12)))
+                              Center(child:Text(item.state??"تولد",style: Theme.of(context).textTheme.display3)),
+                              Center(child: Text(birthDate,style:TextStyle(fontSize: 12)))
                               
                               // Icon(FontAwesomeIcons.sort,color: Colors.white,)
                             ],
@@ -152,22 +185,34 @@ class _CattleListState extends State<CattleList> {
                         )),
                       ],
                     ),
-                    onTap: _onListItemClick,
+                    onTap:()=> _onListItemClick(item),
                   ) 
                 );
-              },
-              itemCount: _items.length,
+              }
             )
           )
       )
     );
   }
 
-  _onListItemClick(){
-    Navigator.push(
+  _onListItemClick(Livestock item)async{
+    final deletedItem= await  Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Detail())
+      MaterialPageRoute(builder: (context) => Detail(livestock: item,))
     );
+
+    if(deletedItem!=null ){
+      setState(() {
+        _livestockList.removeWhere((element) => element.tagNo==deletedItem.tagNo);
+      });
+
+      
+
+      print(_livestockList.length);
+
+      // loadLivestock();
+    }
+
   }
 
   _buildSearchField(){

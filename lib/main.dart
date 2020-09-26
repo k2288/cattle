@@ -1,10 +1,19 @@
-import 'package:cattle/home.dart';
+import 'package:cattle/components/splash/splash_page.dart';
+import 'package:cattle/utils/api/ApiProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+Future main() async{
 
-void main() => runApp(CattleApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  ApiProvider apiProvider=new ApiProvider();
+  await apiProvider.init();
+
+  runApp(CattleApp());
+}
 
 class CattleApp extends StatelessWidget {
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -46,7 +55,7 @@ class CattleApp extends StatelessWidget {
         )
 
       ),
-      home: HomePage(),
+      home: new Scaffold(body:SplashPage(),)
     );
   }
 }

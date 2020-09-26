@@ -4,7 +4,7 @@ class SummaryCard extends StatelessWidget {
 
   final int _index;
   final String _title;
-  final int _count;
+  final dynamic _count;
   SummaryCard(this._index,this._title,this._count);
 
   @override
@@ -53,7 +53,7 @@ class SummaryCard extends StatelessWidget {
               ),
               child: Text(_count.toString(),style: TextStyle(color: Colors.white),),
             ),
-            flex: 1,
+            flex: 2,
           ),
           Flexible(
             child: Container(

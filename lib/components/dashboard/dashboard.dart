@@ -1,6 +1,9 @@
 import 'package:cattle/components/dashboard/main_dashboard_card.dart';
 import 'package:cattle/components/dashboard/summary_card.dart';
 import 'package:cattle/components/list/list.dart';
+import 'package:cattle/models/Dashboard.dart';
+import 'package:cattle/repositories/DashboardRespository.dart';
+import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatefulWidget {
@@ -10,15 +13,52 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
 
+  DashboardRespository _dashboardRespository;
+
+  _DashboardState(){
+    _dashboardRespository=DashboardRespository();
+  }
+
+  DashboardData _dashboard=DashboardData();
+
   EdgeInsetsGeometry _topBottomPadding=EdgeInsets.only(
     top:15.0,
     bottom:15.0
   );
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  Future<void> getData()async{
+    var response=await _dashboardRespository.getDashboard();
+    if(response.status==Status.COMPLETED){
+      
+      setState(() {
+        _dashboard=response.data;  
+      });
+      
+    }else{
+      Scaffold
+        .of(context)
+        .showSnackBar(SnackBar(
+            content: Text(response.message,style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+          )
+        );
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    return CustomScrollView(
+    return RefreshIndicator(child: CustomScrollView(
       slivers: <Widget>[
         SliverPadding(
           padding: EdgeInsets.only(
@@ -35,7 +75,7 @@ class _DashboardState extends State<Dashboard> {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 children: <Widget>[
-                  MainDashboardCard(Color(0xfffd6768),"15","تعداد حیوانات","assets/images/total_cow.svg",_onMainCardClick),
+                  MainDashboardCard(Color(0xfffd6768),(_dashboard.total??0).toString() ,"تعداد حیوانات","assets/images/total_cow.svg",_onMainCardClick),
                   MainDashboardCard(Color(0xff109da4),"08","گاوهای شیری","assets/images/milking_cow.svg",_onMainCardClick),
                   MainDashboardCard(Color(0xfff0981a),"02","گاوهای خشک","assets/images/dry_cow.svg",_onMainCardClick),
                   MainDashboardCard(Color(0xff48294b),"20.00"," میانگین شیر/گاو (Kg)","assets/images/milk.svg",_onMainCardClick),
@@ -63,7 +103,8 @@ class _DashboardState extends State<Dashboard> {
           ),
         )
       ],
-    );
+    ), onRefresh: getData);
+    
   }
 
   _onMainCardClick(){

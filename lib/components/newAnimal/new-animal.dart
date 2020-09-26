@@ -1,8 +1,14 @@
+import 'dart:convert';
+
+import 'package:cattle/components/detail/detail.dart';
 import 'package:cattle/components/newAnimal/drop_down.dart';
 import 'package:cattle/components/newAnimal/input.dart';
-import 'package:faker/faker.dart';
+import 'package:cattle/repositories/LivstockRespository.dart';
+import 'package:cattle/utils/SettingsProvider.dart';
+import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:persian_datepicker/persian_datepicker.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 
@@ -13,45 +19,58 @@ class NewAnimal extends StatefulWidget {
 
 class _NewAnimalState extends State<NewAnimal> {
 
+  LivestockRepository _livestockRepository;
+
   final _formKey = GlobalKey<FormState>();
   final tagController = TextEditingController();
   final nameController = TextEditingController();
   final birthController = TextEditingController();
   final genderController = TextEditingController();
+  final stateController = TextEditingController();
   final motherController = TextEditingController();
   final inserminatorController = TextEditingController();
   String _genderValue;
+  String _stateValue;
 
   final FocusNode _tagFocus = FocusNode();  
   final FocusNode _nameFocus = FocusNode();
   final FocusNode _birthFocus = FocusNode();
   final FocusNode _genderFocus = FocusNode();
+  final FocusNode _stateFocus = FocusNode();
   final FocusNode _motherFocus = FocusNode();
   final FocusNode _inseminatorFocus = FocusNode();
 
   final FocusScopeNode _node = FocusScopeNode();
 
+  PersianDatePickerWidget persianDatePicker;
+
+
   FocusNode currentFocus;
   bool isInitialized=false;
+  List<dynamic> genders =['نر','ماده'];
+  List<dynamic> states =[];//=['نوع ۲','نوع ۱'];
+  DateTime _birth=DateTime.now();
+  
 
   @override
   void initState() {
+
+    persianDatePicker = PersianDatePicker(
+      controller: birthController,
+//      datetime: '1397/06/09',
+    ).init();
+
+    states=SettingsProvider().getSettings().livestockState;
     super.initState();
-
-
   }
 
-  // _NewAnimalState(){
-  //   setState(() {
-  //     currentFocus=_tagFocus;
-  //   });
-  //   FocusScope.of(context).requestFocus(currentFocus);
-  // }
-
-  DateTime _birth=DateTime.now();
-
-
-  List<dynamic> genders =['نر','ماده'];
+  _NewAnimalState(){
+    _livestockRepository=LivestockRepository();
+    // setState(() {
+    //   currentFocus=_tagFocus;
+    // });
+    // FocusScope.of(context).requestFocus(currentFocus);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +99,14 @@ class _NewAnimalState extends State<NewAnimal> {
                   Input("نام",nameController,()=>{},true,_nameFocus,(str)=>_changeFieldFocus(_birthFocus),false),
                   SizedBox(height: 20,),
                   Input("تاریخ تولد",birthController,()=>{
-                    DatePicker.showDatePicker(context,locale: LocaleType.fa,onConfirm: _confirmBirth,currentTime: _birth)
+                    FocusScope.of(context).requestFocus(new FocusNode()), // to prevent opening default keyboard
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return persianDatePicker;
+                    })
+                    // DatePicker.showDatePicker(context,locale: LocaleType.fa,onConfirm: _confirmBirth,currentTime: _birth)
+
                   },false,_birthFocus,(str)=>{},false),
                   SizedBox(height: 20,),
                   DropDown(
@@ -92,31 +118,75 @@ class _NewAnimalState extends State<NewAnimal> {
                         _genderValue=value;
                       });
                       genderController.text=value;
-                      _changeFieldFocus(_motherFocus);
+                      // _changeFieldFocus(_motherFocus);
                     },
                     focus: _genderFocus,
                   ),
+                  SizedBox(height: 20), 
+                  // DropDown(
+                  //   hint: "وضعیت",
+                  //   items:states ,
+                  //   value: _stateValue,
+                  //   onChanged: (value){
+                  //     this.setState((){
+                  //       _stateValue=value;
+                  //     });
+                  //     stateController.text=value;
+                  //     _changeFieldFocus(_motherFocus);
+                  //   },
+                  //   focus: _stateFocus,
+                  // ),
                   SizedBox(height: 20), 
                   Input("مادر",motherController,()=>{},true,_motherFocus,(str)=>_changeFieldFocus(_inseminatorFocus),false),
                   SizedBox(height: 20),
                   Input("تلقیح کننده",inserminatorController,()=>{},true,_inseminatorFocus,(str)=>{},true),
 
                   SizedBox(height: 20,),
-                  RaisedButton(
-                    color: Theme.of(context).primaryColor,
-                    padding: EdgeInsets.all(15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        Scaffold
-                            .of(context)
-                            .showSnackBar(SnackBar(content: Text('Processing Data')));
-                      }
-                    },
-                    child: Text('ذخیره دام',style: Theme.of(context).textTheme.button,),
+                  Builder(
+                    builder: (context){
+                      return RaisedButton(
+                        color: Theme.of(context).primaryColor,
+                        padding: EdgeInsets.all(15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        onPressed: () async {
+                          var body=jsonEncode(<String, dynamic>{
+                            "tagNo":tagController.text,
+                            "name":nameController.text,
+                            "birthDate":birthController.text,
+                            "gender":genderController.text,
+                            "mother":motherController.text,
+                            "inseminator":inserminatorController.text,
+                            // "state":stateController.text,
+                          });
+
+                          var response=await _livestockRepository.postLivestock(body);
+                          if(response.status==Status.COMPLETED){
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Detail(livestock: response.data,)));
+                          }else{
+                            Scaffold
+                              .of(context)
+                              .showSnackBar(SnackBar(
+                                  content: Text(response.message,style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                          }
+
+                          // var response = await http.post("${FlutterConfig.get('API_URL')}/v1/livestock", body:body);
+                          // if (_formKey.currentState.validate()) {
+                          //   Scaffold
+                          //       .of(context)
+                          //       .showSnackBar(SnackBar(content: Text('Processing Data')));
+                          // }
+                        },
+                        child: Text('ذخیره دام',style: Theme.of(context).textTheme.button),
+                      );
+                    }
                   )
+                  
                 ]),
               )
             )
@@ -137,8 +207,9 @@ class _NewAnimalState extends State<NewAnimal> {
   }
 
   _confirmBirth(DateTime date){
-    this.setState(()=>{
-      _birth=date
+    print(date);
+    this.setState((){
+      _birth=date;
     });
     Date jalali=Gregorian.fromDateTime(date).toJalali();
     birthController.text= "${jalali.year}/${jalali.month.toString().padLeft(2,"0")}/${jalali.day.toString().padLeft(2,"0")}" ;

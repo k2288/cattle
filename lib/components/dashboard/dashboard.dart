@@ -75,9 +75,9 @@ class _DashboardState extends State<Dashboard> {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 children: <Widget>[
-                  MainDashboardCard(Color(0xfffd6768),(_dashboard.total??0).toString() ,"تعداد حیوانات","assets/images/total_cow.svg",_onMainCardClick),
-                  MainDashboardCard(Color(0xff109da4),"08","گاوهای شیری","assets/images/milking_cow.svg",_onMainCardClick),
-                  MainDashboardCard(Color(0xfff0981a),"02","گاوهای خشک","assets/images/dry_cow.svg",_onMainCardClick),
+                  MainDashboardCard(Color(0xfffd6768),_dashboard.total.toString().padLeft(2,"0") ,"تعداد حیوانات","assets/images/total_cow.svg",_onMainCardClick),
+                  MainDashboardCard(Color(0xff109da4),_dashboard.calved.toString().padLeft(2,"0"),"گاوهای شیری","assets/images/milking_cow.svg",_onMainCardClick),
+                  MainDashboardCard(Color(0xfff0981a),_dashboard.dry.toString().padLeft(2,"0"),"گاوهای خشک","assets/images/dry_cow.svg",_onMainCardClick),
                   MainDashboardCard(Color(0xff48294b),"20.00"," میانگین شیر/گاو (Kg)","assets/images/milk.svg",_onMainCardClick),
                 ],
               ),

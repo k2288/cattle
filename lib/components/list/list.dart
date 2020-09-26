@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cattle/components/detail/detail.dart';
 import 'package:cattle/models/livestock.dart';
 import 'package:cattle/repositories/LivstockRespository.dart';
@@ -7,9 +5,7 @@ import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:cattle/widgets/PinSnackBar.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/pin_image.dart';
-import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
-import 'package:shamsi_date/shamsi_date.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CattleList extends StatefulWidget {
@@ -137,7 +133,6 @@ class _CattleListState extends State<CattleList> {
                             ),
                             padding: EdgeInsets.all(10),
                             child: item.gender!=null && _settingData.livestockType.contains(item.gender)  ? PinImage(url: "/assets/type/${item.gender}.png"):Container()
-                            // Center(child: Baseline(baseline: 14, baselineType: TextBaseline.alphabetic, child: Text(item._state,style: Theme.of(context).textTheme.display1,),) ,) ,
                           )
                         ),
                         Flexible(flex: 3, child:Container(
@@ -151,21 +146,14 @@ class _CattleListState extends State<CattleList> {
                               Text(item.gender,style: Theme.of(context).textTheme.display3,),
                               Text(item.tagNo,style: Theme.of(context).textTheme.display2,),
                               
-                              // Icon(FontAwesomeIcons.sort,color: Colors.white,)
                             ],
                           )
                         )),
                         Flexible(flex: 2, child: Container(
-                            // width: 10,
-                            // decoration: BoxDecoration(
-                            //   shape: BoxShape.circle,
-                            //   color: Color(0xff369ee5)
-                            // ),
-                            // margin: EdgeInsets.all(5),
+                            
                             padding: EdgeInsets.all(15),
                             child: item.state!=null && _settingData.livestockState.contains(item.state)  ? PinImage(url: "/assets/states/${item.state}.png"):Container(),
-                            // Image.asset("assets/images/state/${item.state}.png")
-                            // Center(child: Baseline(baseline: 14, baselineType: TextBaseline.alphabetic, child: Text(item._state,style: Theme.of(context).textTheme.display1,),) ,) ,
+                            
                           )
                         ),
                         Flexible(flex: 2, child:Container(
@@ -206,11 +194,6 @@ class _CattleListState extends State<CattleList> {
         _livestockList.removeWhere((element) => element.tagNo==deletedItem.tagNo);
       });
 
-      
-
-      print(_livestockList.length);
-
-      // loadLivestock();
     }
 
   }

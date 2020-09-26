@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cattle/models/LivestockState.dart';
 import 'package:cattle/models/livestock.dart';
 import 'package:cattle/utils/api/ApiProvider.dart';
@@ -36,8 +38,17 @@ class LivestockRepository{
 
   Future<Response> postState(id,body)async{
     try{
-      final response = await _apiProvider.post("/v1/livestock/$id/state",body);
+      final response = await _apiProvider.post("/v1/livestock/$id/state",jsonEncode(body));
       return Response.completed(LivestockState.fromJSON(response));
+    }catch(e){
+      return Response.error(e.toString());
+    }
+  }
+
+  Future<Response> putState(id,body)async{
+    try{
+      final response = await _apiProvider.put("/v1/livestock/$id/state/${body['id']}",jsonEncode(body));
+      return Response.completed(response);
     }catch(e){
       return Response.error(e.toString());
     }
@@ -47,6 +58,15 @@ class LivestockRepository{
     try{
       final response = await _apiProvider.get("/v1/livestock/$id/state",params);
       return Response.completed( LiveStockStateResponse.fromJSON(response));
+    }catch(e){
+      return Response.error(e.toString());
+    }
+  }
+
+  Future<Response> deleteLivestockState(id,stateId)async{
+    try{
+      final response = await _apiProvider.delete("/v1/livestock/$id/state/$stateId");
+      return Response.completed(Livestock.fromJSON(response));
     }catch(e){
       return Response.error(e.toString());
     }

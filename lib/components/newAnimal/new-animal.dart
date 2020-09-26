@@ -114,7 +114,7 @@ class _NewAnimalState extends State<NewAnimal> {
                     items: genders,
                     value: _genderValue,
                     onChanged: (value){
-                      this.setState((){
+                      setState((){
                         _genderValue=value;
                       });
                       genderController.text=value;

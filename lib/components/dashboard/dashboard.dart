@@ -1,5 +1,6 @@
 import 'package:cattle/components/dashboard/main_dashboard_card.dart';
 import 'package:cattle/components/dashboard/summary_card.dart';
+import 'package:cattle/components/list/filter.dart';
 import 'package:cattle/components/list/list.dart';
 import 'package:cattle/models/Dashboard.dart';
 import 'package:cattle/repositories/DashboardRespository.dart';
@@ -75,13 +76,13 @@ class _DashboardState extends State<Dashboard> {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 children: <Widget>[
-                  MainDashboardCard(Color(0xfffd6768),_dashboard.total.toString().padLeft(2,"0") ,"تعداد حیوانات","assets/images/total_cow.svg",_onMainCardClick),
-                  MainDashboardCard(Color(0xff109da4),_dashboard.calved.toString().padLeft(2,"0"),"گاوهای شیری","assets/images/milking_cow.svg",_onMainCardClick),
-                  MainDashboardCard(Color(0xfff0981a),_dashboard.dry.toString().padLeft(2,"0"),"گاوهای خشک","assets/images/dry_cow.svg",_onMainCardClick),
-                  MainDashboardCard(Color(0xff48294b),"20.00"," میانگین شیر/گاو (Kg)","assets/images/milk.svg",_onMainCardClick),
+                  MainDashboardCard(Color(0xfffd6768),_dashboard.total.toString().padLeft(2,"0") ,"تعداد حیوانات","assets/images/total_cow.svg",()=>_onMainCardClick(FilterData([], []))),
+                  MainDashboardCard(Color(0xff109da4),_dashboard.calved.toString().padLeft(2,"0"),"گاوهای شیری","assets/images/milking_cow.svg",()=>_onMainCardClick(FilterData(["زایش"], []))),
+                  MainDashboardCard(Color(0xfff0981a),_dashboard.dry.toString().padLeft(2,"0"),"گاوهای خشک","assets/images/dry_cow.svg",()=>_onMainCardClick(FilterData(["خشک"],[]))),
+                  MainDashboardCard(Color(0xff48294b),"00.00"," میانگین شیر/گاو (Kg)","assets/images/milk.svg",null),
                 ],
               ),
-              Text("خلاصه باروری",style: Theme.of(context).textTheme.title),
+              Text("خلاصه وضعیت",style: Theme.of(context).textTheme.title),
               GridView.count(
                 crossAxisCount: 3,
                 padding: _topBottomPadding,
@@ -91,12 +92,12 @@ class _DashboardState extends State<Dashboard> {
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 children: <Widget>[
-                  SummaryCard(0,"آماده تلقیح",555),
-                  SummaryCard(1,"حامله",3),
-                  SummaryCard(2,'بارداری منفی',5),
-                  SummaryCard(3,'خشک',1),
-                  SummaryCard(4,"عقیم",0),
-                  SummaryCard(5,"بدون فحلی",2),
+                  SummaryCard(0,"تلقیح", _dashboard.insemination.toString().padLeft(2,"0")),
+                  SummaryCard(1,"شیر خوار", _dashboard.milked.toString().padLeft(2,"0")),
+                  SummaryCard(2,'تلیسه', _dashboard.heifer.toString().padLeft(2,"0")),
+                  SummaryCard(3,'سقط', _dashboard.abortion.toString().padLeft(2,"0")),
+                  SummaryCard(4,"نر", _dashboard.bull.toString().padLeft(2,"0")),
+                  SummaryCard(5,"ماده", _dashboard.cow.toString().padLeft(2,"0")),
                 ],
               )
             ]),
@@ -107,10 +108,10 @@ class _DashboardState extends State<Dashboard> {
     
   }
 
-  _onMainCardClick(){
+  _onMainCardClick(FilterData filterDate){
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CattleList(title: "حیوانات",)),
+      MaterialPageRoute(builder: (context) => CattleList(title: "حیوانات",filterData: filterDate,)),
     );
   }
 }

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:cattle/components/detail/detail.dart';
+import 'package:cattle/components/list/filter.dart';
 import 'package:cattle/models/livestock.dart';
 import 'package:cattle/repositories/LivstockRespository.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
@@ -6,14 +9,15 @@ import 'package:cattle/utils/api/Response.dart';
 import 'package:cattle/widgets/PinSnackBar.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/pin_image.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CattleList extends StatefulWidget {
 
-  CattleList({ @required this.title});
+  CattleList({ @required this.title,this.filterData});
 
   final String title;
+  final FilterData filterData;
 
   @override
   _CattleListState createState() => _CattleListState();
@@ -29,7 +33,8 @@ class _CattleListState extends State<CattleList> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   SettingsData _settingData;
 
-  
+  FilterData filterData=FilterData([],[]);
+  String searchTerm="";
 
   _CattleListState(){
     _livestockRepository=LivestockRepository();
@@ -37,6 +42,7 @@ class _CattleListState extends State<CattleList> {
 
   @override
   void initState() {
+    filterData=widget.filterData;
     loadLivestock();
     _settingData= SettingsProvider().getSettings();
     super.initState();
@@ -50,11 +56,12 @@ class _CattleListState extends State<CattleList> {
       });
     }
 
-
-
     var response =await _livestockRepository.getLivestockList({
+      "state":filterData.states.length>0?jsonEncode(filterData.states):null ,
+      "type":filterData.type.length>0? jsonEncode(filterData.type):null,
       "offset":(_offset+_pageSize).toString(),
-      "pageSize":_pageSize.toString()
+      "pageSize":_pageSize.toString(),
+      "searchTerm":searchTerm!=""?searchTerm:null
     });
     if(response.status==Status.COMPLETED){
       setState(() {
@@ -85,7 +92,7 @@ class _CattleListState extends State<CattleList> {
         color: Theme.of(context).scaffoldBackgroundColor,
         child: 
           RefreshIndicator(
-            onRefresh:()=>loadLivestock(true) ,
+            onRefresh:()=>loadLivestock(true),
             child: ListView.builder(
               itemCount: _livestockList.length,
               itemBuilder: (BuildContext buildContext,int index){
@@ -239,10 +246,27 @@ class _CattleListState extends State<CattleList> {
         onPressed: _startSearch,
       ),
       IconButton(
-        icon: const Icon(FontAwesomeIcons.slidersH),
-        onPressed: _startSearch,
+        icon: const Icon(FontAwesome.sliders),
+        onPressed: ()=>showFilterHandler(),
       ),
     ];
+  }
+
+  showFilterHandler()async{
+    FilterData response=await showModalBottomSheet(context: context, builder: (context){
+        return Filter(filterData);
+      },
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+        backgroundColor: Colors.white,
+    );
+    if(response!=null){
+      setState(() {
+        filterData=response;
+      });
+      loadLivestock(true);
+    }
   }
 
   void _startSearch() {

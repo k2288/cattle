@@ -34,7 +34,6 @@ class _CattleListState extends State<CattleList> {
   SettingsData _settingData;
 
   FilterData filterData=FilterData([],[]);
-  String searchTerm="";
 
   _CattleListState(){
     _livestockRepository=LivestockRepository();
@@ -61,7 +60,7 @@ class _CattleListState extends State<CattleList> {
       "type":filterData.type.length>0? jsonEncode(filterData.type):null,
       "offset":(_offset+_pageSize).toString(),
       "pageSize":_pageSize.toString(),
-      "searchTerm":searchTerm!=""?searchTerm:null
+      "searchTerm":searchQuery!=""?searchQuery:null
     });
     if(response.status==Status.COMPLETED){
       setState(() {
@@ -208,8 +207,8 @@ class _CattleListState extends State<CattleList> {
 
   _buildSearchField(){
     return TextField(
-      onSubmitted: (query)=>{
-        
+      onSubmitted: (query){
+        updateSearchQuery(query);
       },
       textInputAction: TextInputAction.search,
       controller: _searchQueryController,
@@ -282,6 +281,7 @@ class _CattleListState extends State<CattleList> {
     setState(() {
       searchQuery = newQuery;
     });
+    loadLivestock(true);
   }
 
   void _stopSearching() {

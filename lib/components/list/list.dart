@@ -6,6 +6,7 @@ import 'package:cattle/utils/api/Response.dart';
 import 'package:cattle/widgets/PinSnackBar.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/pin_image.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CattleList extends StatefulWidget {
@@ -200,6 +201,10 @@ class _CattleListState extends State<CattleList> {
 
   _buildSearchField(){
     return TextField(
+      onSubmitted: (query)=>{
+        
+      },
+      textInputAction: TextInputAction.search,
       controller: _searchQueryController,
       autofocus: true,
       decoration: InputDecoration(
@@ -234,7 +239,7 @@ class _CattleListState extends State<CattleList> {
         onPressed: _startSearch,
       ),
       IconButton(
-        icon: const Icon(Icons.sentiment_very_satisfied),
+        icon: const Icon(FontAwesomeIcons.slidersH),
         onPressed: _startSearch,
       ),
     ];

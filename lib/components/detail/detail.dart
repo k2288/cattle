@@ -227,8 +227,6 @@ class _DetailState extends State<Detail> {
                     SummaryCard(1,"جنسیت", widget.livestock.gender.toString()),
                     SummaryCard(2,'مادر', widget.livestock.mother),
                     SummaryCard(3,'تلقیح کننده', widget.livestock.inseminator),
-                    SummaryCard(4,"نام", widget.livestock.name),
-                    SummaryCard(5,"تعداد شکم", ""),
                   ],
                 ),
                 SizedBox(

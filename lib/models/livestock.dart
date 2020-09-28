@@ -1,7 +1,6 @@
 class Livestock{
   String id;
   String tagNo;
-  String name;
   String birthDate;
   String lastStateDate;
   String gender;
@@ -10,12 +9,11 @@ class Livestock{
   String state;
   String userId;
 
-  Livestock({this.tagNo,this.name,this.birthDate,this.gender,this.mother,this.inseminator,this.state,this.userId});
+  Livestock({this.tagNo,this.birthDate,this.gender,this.mother,this.inseminator,this.state,this.userId});
 
   Livestock.fromJSON(Map<String,dynamic> json)
     : tagNo=json["tagNo"],
       id=json["_id"],
-      name=json["name"],
       birthDate=json["birthDate"],
       lastStateDate=json["lastStateDate"],
       gender=json["gender"],

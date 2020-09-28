@@ -7,7 +7,6 @@ import 'package:cattle/repositories/LivstockRespository.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:persian_datepicker/persian_datepicker.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
@@ -23,7 +22,6 @@ class _NewAnimalState extends State<NewAnimal> {
 
   final _formKey = GlobalKey<FormState>();
   final tagController = TextEditingController();
-  final nameController = TextEditingController();
   final birthController = TextEditingController();
   final genderController = TextEditingController();
   final stateController = TextEditingController();
@@ -33,7 +31,6 @@ class _NewAnimalState extends State<NewAnimal> {
   String _stateValue;
 
   final FocusNode _tagFocus = FocusNode();  
-  final FocusNode _nameFocus = FocusNode();
   final FocusNode _birthFocus = FocusNode();
   final FocusNode _genderFocus = FocusNode();
   final FocusNode _stateFocus = FocusNode();
@@ -94,10 +91,8 @@ class _NewAnimalState extends State<NewAnimal> {
               padding: EdgeInsets.all(20),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  Input("شماره تگ",tagController,()=>{},true,_tagFocus,(str)=>_changeFieldFocus(_nameFocus),false),
+                  Input("شماره تگ",tagController,()=>{},true,_tagFocus,(str)=>_changeFieldFocus(_birthFocus),false),
                   SizedBox(height: 20),
-                  Input("نام",nameController,()=>{},true,_nameFocus,(str)=>_changeFieldFocus(_birthFocus),false),
-                  SizedBox(height: 20,),
                   Input("تاریخ تولد",birthController,()=>{
                     FocusScope.of(context).requestFocus(new FocusNode()), // to prevent opening default keyboard
                     showModalBottomSheet(
@@ -153,7 +148,6 @@ class _NewAnimalState extends State<NewAnimal> {
                         onPressed: () async {
                           var body=jsonEncode(<String, dynamic>{
                             "tagNo":tagController.text,
-                            "name":nameController.text,
                             "birthDate":birthController.text,
                             "gender":genderController.text,
                             "mother":motherController.text,
@@ -197,8 +191,6 @@ class _NewAnimalState extends State<NewAnimal> {
   }
 
   _changeFieldFocus(FocusNode nextFocus){
-    // _node.nextFocus();
-    print(nextFocus.toString());
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);  
     setState(() {

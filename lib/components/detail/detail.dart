@@ -11,6 +11,8 @@ import 'package:cattle/widgets/PinSnackBar.dart';
 import 'package:cattle/widgets/confirm_dialog.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/pin_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persian_datepicker/persian_datepicker.dart';
 
 
@@ -163,12 +165,19 @@ class _DetailState extends State<Detail> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title:Text("${widget.livestock.name} | ${widget.livestock.tagNo}"),
+        title:Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          children: [
+            Icon(FontAwesome.tag,color: Colors.yellow,),
+            Text(" ${widget.livestock.tagNo}"),
+          ],
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed:()=> showDeleteDialog(confirmDeleteLivestock)
           ),
+          // SvgPicture.asset("assets/images/dry_cow.svg",fit:BoxFit.contain ,color: Colors.white,),
           PopupMenuButton(
             offset: Offset(0,10),
             // elevation: 3.2,
@@ -218,7 +227,7 @@ class _DetailState extends State<Detail> {
                     SummaryCard(1,"جنسیت", widget.livestock.gender.toString()),
                     SummaryCard(2,'مادر', widget.livestock.mother),
                     SummaryCard(3,'تلقیح کننده', widget.livestock.inseminator),
-                    SummaryCard(4,"وزن", ""),
+                    SummaryCard(4,"نام", widget.livestock.name),
                     SummaryCard(5,"تعداد شکم", ""),
                   ],
                 ),

@@ -8,6 +8,7 @@ import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_datepicker/persian_datepicker.dart';
+import 'package:persian_datepicker/persian_datetime.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 
@@ -100,7 +101,6 @@ class _NewAnimalState extends State<NewAnimal> {
                       builder: (BuildContext context) {
                         return persianDatePicker;
                     })
-                    // DatePicker.showDatePicker(context,locale: LocaleType.fa,onConfirm: _confirmBirth,currentTime: _birth)
 
                   },false,_birthFocus,(str)=>{},false),
                   SizedBox(height: 20,),
@@ -146,9 +146,12 @@ class _NewAnimalState extends State<NewAnimal> {
                           borderRadius: BorderRadius.circular(10)
                         ),
                         onPressed: () async {
+
+                          
+
                           var body=jsonEncode(<String, dynamic>{
                             "tagNo":tagController.text,
-                            "birthDate":birthController.text,
+                            "birthDate":PersianDateTime(jalaaliDateTime: birthController.text).toGregorian(),
                             "gender":genderController.text,
                             "mother":motherController.text,
                             "inseminator":inserminatorController.text,
@@ -198,13 +201,4 @@ class _NewAnimalState extends State<NewAnimal> {
     });
   }
 
-  _confirmBirth(DateTime date){
-    print(date);
-    this.setState((){
-      _birth=date;
-    });
-    Date jalali=Gregorian.fromDateTime(date).toJalali();
-    birthController.text= "${jalali.year}/${jalali.month.toString().padLeft(2,"0")}/${jalali.day.toString().padLeft(2,"0")}" ;
-    _changeFieldFocus(_genderFocus);
-  }
 }

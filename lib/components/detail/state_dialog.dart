@@ -7,6 +7,7 @@ import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_datepicker/persian_datepicker.dart';
+import 'package:persian_datepicker/persian_datetime.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 class StateDialog extends StatefulWidget {
@@ -34,17 +35,11 @@ class _StateDialogState extends State<StateDialog> {
   void initState() {
 
     if(widget._livestockState.date!=null){
-      DateTime jalali = DateTime.parse(widget._livestockState.date);
-      stateDateController.text="${jalali.year}/${jalali.month.toString().padLeft(2,"0")}/${jalali.day.toString().padLeft(2,"0")}" ;
+      stateDateController.text=widget._livestockState.date;
     }else{
       Date jalali=Gregorian.fromDateTime(DateTime.now()).toJalali();
       stateDateController.text= "${jalali.year}/${jalali.month.toString().padLeft(2,"0")}/${jalali.day.toString().padLeft(2,"0")}" ;
     }
-    
-    
-
-  
-
     
     persianDatePicker = PersianDatePicker(
       controller: stateDateController,
@@ -136,7 +131,7 @@ class _StateDialogState extends State<StateDialog> {
                         
                         var body=<String,dynamic>{
                           "state":stateController.text,
-                          "date":stateDateController.text,
+                          "date":PersianDateTime(jalaaliDateTime: stateDateController.text).toGregorian() ,
                           "description":descriptionController.text,
                           "id":widget._livestockState.id
                         };

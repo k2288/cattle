@@ -96,14 +96,7 @@ class _CattleListState extends State<CattleList> {
               itemCount: _livestockList.length,
               itemBuilder: (BuildContext buildContext,int index){
                 Livestock item=_livestockList[index];
-                DateTime tempDate;
-                if(item.state!=null){
-                  tempDate= DateTime.parse(item.lastStateDate);
-                }else{
-                  tempDate= DateTime.parse(item.birthDate);
-                }
                 
-                String birthDate="${tempDate.year}/${tempDate.month.toString().padLeft(2,"0")}/${tempDate.day.toString().padLeft(2,"0")}";
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -172,7 +165,7 @@ class _CattleListState extends State<CattleList> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Center(child:Text(item.state??"تولد",style: Theme.of(context).textTheme.display3)),
-                              Center(child: Text(birthDate,style:TextStyle(fontSize: 12)))
+                              Center(child: Text(item.state!=null?item.lastStateDate:item.birthDate,style:TextStyle(fontSize: 12)))
                               
                               // Icon(FontAwesomeIcons.sort,color: Colors.white,)
                             ],

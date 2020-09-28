@@ -13,6 +13,7 @@ import 'package:cattle/widgets/fab_bottom_navigation/pin_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:persian_date/persian_date.dart';
 import 'package:persian_datepicker/persian_datepicker.dart';
 
 
@@ -40,7 +41,6 @@ class _DetailState extends State<Detail> {
   LivestockRepository _livestockRepository;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  DateTime birthDate;
 
   _DetailState(){
     _livestockRepository=LivestockRepository();
@@ -50,7 +50,7 @@ class _DetailState extends State<Detail> {
   void initState() {
 
     scrollController = new ScrollController()..addListener(_scrollListener);
-    birthDate=DateTime.parse(widget.livestock.birthDate);
+
     loadLogs();
     super.initState();
   }
@@ -121,7 +121,7 @@ class _DetailState extends State<Detail> {
   }
 
   void _select(String value){
-    LivestockState livestockState=LivestockState(value,null,"123");
+    LivestockState livestockState=LivestockState(value,null,"");
     showDialog(
       context: context,
       child: StateDialog(livestockState,saveStateHandler)
@@ -148,7 +148,7 @@ class _DetailState extends State<Detail> {
     
     if(response.status==Status.COMPLETED){
       int index= _logs.indexWhere((element) => element.id==body["id"]);
-      LivestockState state=LivestockState(body["state"],body["date"].toString().replaceAll("/","-"),body["description"],body["id"]);
+      LivestockState state=LivestockState(body["state"],PersianDate().gregorianToJalali(body["date"],"yyyy/mm/d"),body["description"],body["id"]);
       setState(() {
         _logs[index]=state;
       });
@@ -223,7 +223,7 @@ class _DetailState extends State<Detail> {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   children: <Widget>[
-                    SummaryCard(0,"تولد",  "${birthDate.year}/${birthDate.month}/${birthDate.day}",),
+                    SummaryCard(0,"تولد",  "${widget.livestock.birthDate}",),
                     SummaryCard(1,"جنسیت", widget.livestock.gender.toString()),
                     SummaryCard(2,'مادر', widget.livestock.mother),
                     SummaryCard(3,'تلقیح کننده', widget.livestock.inseminator),
@@ -239,7 +239,6 @@ class _DetailState extends State<Detail> {
                   shrinkWrap: true,
                   itemBuilder: (BuildContext buildcontext,int index){
                   LivestockState item=_logs[index];
-                  DateTime date=DateTime.parse(item.date);
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -298,7 +297,7 @@ class _DetailState extends State<Detail> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Center(child:Text("${date.year}/${date.month.toString().padLeft(2,"0")}/${date.day.toString().padLeft(2,"0")}",style: Theme.of(context).textTheme.display3,)),
+                              Center(child:Text(item.date,style: Theme.of(context).textTheme.display3,)),
                             ],
                           )
                         )),

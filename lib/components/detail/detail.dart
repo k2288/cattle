@@ -12,7 +12,6 @@ import 'package:cattle/widgets/confirm_dialog.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/pin_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persian_date/persian_date.dart';
 import 'package:persian_datepicker/persian_datepicker.dart';
 
@@ -232,6 +231,7 @@ class _DetailState extends State<Detail> {
                 SizedBox(
                   height: 10,
                 ),
+                Text("تاریخچه",style: Theme.of(context).textTheme.title),
                 ListView.builder(
                   scrollDirection: Axis.vertical,
                   primary: false,

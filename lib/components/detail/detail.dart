@@ -232,6 +232,9 @@ class _DetailState extends State<Detail> {
                   height: 10,
                 ),
                 Text("تاریخچه",style: Theme.of(context).textTheme.title),
+                SizedBox(
+                  height: 10,
+                ),
                 ListView.builder(
                   scrollDirection: Axis.vertical,
                   primary: false,

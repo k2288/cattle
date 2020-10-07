@@ -172,7 +172,7 @@ class _NewAnimalState extends State<NewAnimal> {
                             "gender":genderController.text,
                             "mother":motherController.text,
                             "inseminator":inserminatorController.text,
-                            "_id":widget.livestock.id
+                            "_id":widget.livestock!=null?widget.livestock.id:null
                             // "state":stateController.text,
                           });
                           

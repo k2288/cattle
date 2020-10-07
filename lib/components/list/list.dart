@@ -27,11 +27,15 @@ class _CattleListState extends State<CattleList> {
   TextEditingController _searchQueryController = TextEditingController();
   bool _isSearching = false;
   String searchQuery = "";
-  int _pageSize=10,_offset=-10;
+  int _pageSize=10,_offset=-10,_totalItems=-1;
+  bool _loading=true;
+
   List<Livestock> _livestockList=new List<Livestock>();
   LivestockRepository _livestockRepository;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   SettingsData _settingData;
+
+  ScrollController scrollController;
 
   FilterData filterData=FilterData([],[]);
 
@@ -44,10 +48,21 @@ class _CattleListState extends State<CattleList> {
     filterData=widget.filterData;
     loadLivestock();
     _settingData= SettingsProvider().getSettings();
+
+    scrollController= ScrollController()..addListener(_scrollListener);
     super.initState();
   }
 
+  void _scrollListener(){
+    if (scrollController.position.extentAfter < 300 && _totalItems>_offset+_pageSize && _loading==false ) {
+      loadLivestock();
+    }
+  }
+
   Future<void> loadLivestock([bool isRefresh=false])async{
+    setState(() {
+      _loading=true;
+    });
     if(isRefresh){
       setState(() {
         _offset=-10;
@@ -65,6 +80,10 @@ class _CattleListState extends State<CattleList> {
     if(response.status==Status.COMPLETED){
       setState(() {
         _livestockList.addAll(response.data.content) ;
+        _offset=response.data.offset;
+        _pageSize=response.data.pageSize;
+        _totalItems=response.data.totalElements;
+        _loading=false;
       });
 
     }else{
@@ -89,95 +108,105 @@ class _CattleListState extends State<CattleList> {
       ),
       body:Container(
         color: Theme.of(context).scaffoldBackgroundColor,
-        child: 
+        child:  
           RefreshIndicator(
             onRefresh:()=>loadLivestock(true),
-            child: ListView.builder(
-              itemCount: _livestockList.length,
-              itemBuilder: (BuildContext buildContext,int index){
-                Livestock item=_livestockList[index];
-                
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    // borderRadius: BorderRadius.circular(5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey[200],
-                        blurRadius: .5,
-                        spreadRadius: .2,
-                        offset: Offset(
-                          1,
-                          1
+            child: _totalItems>0? SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              controller: scrollController,
+              child: ListView.builder(
+                primary: false,
+                shrinkWrap: true,
+                itemCount: _livestockList.length,
+                itemBuilder: (BuildContext buildContext,int index){
+                  Livestock item=_livestockList[index];
+                  
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      // borderRadius: BorderRadius.circular(5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey[200],
+                          blurRadius: .5,
+                          spreadRadius: .2,
+                          offset: Offset(
+                            1,
+                            1
+                          )
                         )
-                      )
-                    ]
-                  ),
-                  margin: EdgeInsets.only(
-                    // left: 5,
-                    // right: 5,
-                    top:1
-                  ),
-                  child: InkWell(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(flex: 2, child: Container(
-                            // width: 10,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              // color: Color(0xff369ee5)
-                            ),
-                            margin: EdgeInsets.only(
-                              bottom: 5
-                            ),
-                            padding: EdgeInsets.all(10),
-                            child: item.gender!=null && _settingData.livestockType.contains(item.gender)  ? PinImage(url: "/assets/type/${item.gender}.png"):Container()
-                          )
-                        ),
-                        Flexible(flex: 3, child:Container(
-                          width: double.infinity,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.only(top:20,bottom:20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(item.gender,style: Theme.of(context).textTheme.display3,),
-                              Text(item.tagNo,style: Theme.of(context).textTheme.display2,),
-                              
-                            ],
-                          )
-                        )),
-                        Flexible(flex: 2, child: Container(
-                            
-                            padding: EdgeInsets.all(15),
-                            child: item.state!=null && _settingData.livestockState.contains(item.state)  ? PinImage(url: "/assets/states/${item.state}.png"):Container(),
-                            
-                          )
-                        ),
-                        Flexible(flex: 2, child:Container(
-                          width: double.infinity,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.only(top:20,bottom:20,left:5),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Center(child:Text(item.state??"تولد",style: Theme.of(context).textTheme.display3)),
-                              Center(child: Text(item.state!=null?item.lastStateDate:item.birthDate,style:TextStyle(fontSize: 12)))
-                              
-                              // Icon(FontAwesomeIcons.sort,color: Colors.white,)
-                            ],
-                          )
-                        )),
-                      ],
+                      ]
                     ),
-                    onTap:()=> _onListItemClick(item),
-                  ) 
-                );
-              }
-            )
+                    margin: EdgeInsets.only(
+                      // left: 5,
+                      // right: 5,
+                      top:1
+                    ),
+                    child: InkWell(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Flexible(flex: 2, child: Container(
+                              // width: 10,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                // color: Color(0xff369ee5)
+                              ),
+                              margin: EdgeInsets.only(
+                                bottom: 5
+                              ),
+                              padding: EdgeInsets.all(10),
+                              child: item.gender!=null && _settingData.livestockType.contains(item.gender)  ? PinImage(url: "/assets/type/${item.gender}.png"):Container()
+                            )
+                          ),
+                          Flexible(flex: 3, child:Container(
+                            width: double.infinity,
+                            margin: EdgeInsets.all(0),
+                            padding: EdgeInsets.only(top:20,bottom:20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(item.gender,style: Theme.of(context).textTheme.display3,),
+                                Text(item.tagNo,style: Theme.of(context).textTheme.display2,),
+                                
+                              ],
+                            )
+                          )),
+                          Flexible(flex: 2, child: Container(
+                              
+                              padding: EdgeInsets.all(15),
+                              child: item.state!=null && _settingData.livestockState.contains(item.state)  ? PinImage(url: "/assets/states/${item.state}.png"):Container(),
+                              
+                            )
+                          ),
+                          Flexible(flex: 2, child:Container(
+                            width: double.infinity,
+                            margin: EdgeInsets.all(0),
+                            padding: EdgeInsets.only(top:20,bottom:20,left:5),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Center(child:Text(item.state??"تولد",style: Theme.of(context).textTheme.display3)),
+                                Center(child: Text(item.state!=null?item.lastStateDate:item.birthDate,style:TextStyle(fontSize: 12)))
+                                
+                                // Icon(FontAwesomeIcons.sort,color: Colors.white,)
+                              ],
+                            )
+                          )),
+                        ],
+                      ),
+                      onTap:()=> _onListItemClick(item),
+                    ) 
+                  );
+                }
+              )
+            ):(
+                _totalItems==0?Center(child:Text("موردی یافت نشد"))
+                :Center( child:CircularProgressIndicator())
+              )
+             
           )
       )
     );

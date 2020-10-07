@@ -238,7 +238,7 @@ class _DetailState extends State<Detail> {
                 SizedBox(
                   height: 10,
                 ),
-                Text("تاریخچه",style: Theme.of(context).textTheme.title),
+                _logs.length>0?Text("تاریخچه",style: Theme.of(context).textTheme.title):Container(),
                 SizedBox(
                   height: 10,
                 ),

@@ -2,6 +2,7 @@
 
 import 'package:cattle/components/dashboard/summary_card.dart';
 import 'package:cattle/components/detail/state_dialog.dart';
+import 'package:cattle/components/newAnimal/new-animal.dart';
 import 'package:cattle/models/LivestockState.dart';
 import 'package:cattle/models/livestock.dart';
 import 'package:cattle/repositories/LivstockRespository.dart';
@@ -175,6 +176,12 @@ class _DetailState extends State<Detail> {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed:()=> showDeleteDialog(confirmDeleteLivestock)
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed:() {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>NewAnimal(livestock: widget.livestock)));
+            }
           ),
           // SvgPicture.asset("assets/images/dry_cow.svg",fit:BoxFit.contain ,color: Colors.white,),
           PopupMenuButton(

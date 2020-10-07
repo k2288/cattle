@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cattle/components/detail/detail.dart';
 import 'package:cattle/components/newAnimal/drop_down.dart';
 import 'package:cattle/components/newAnimal/input.dart';
+import 'package:cattle/models/livestock.dart';
 import 'package:cattle/repositories/LivstockRespository.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
@@ -13,6 +14,10 @@ import 'package:persian_datepicker/persian_datetime.dart';
 
 
 class NewAnimal extends StatefulWidget {
+
+  Livestock livestock;
+  NewAnimal({this.livestock});
+
   @override
   _NewAnimalState createState() => _NewAnimalState();
 }
@@ -53,6 +58,15 @@ class _NewAnimalState extends State<NewAnimal> {
   @override
   void initState() {
 
+    if(widget.livestock!=null){
+      tagController.text=widget.livestock.tagNo;
+      birthController.text=widget.livestock.birthDate;
+      genderController.text=widget.livestock.gender;
+      _genderValue=widget.livestock.gender;
+      motherController.text=widget.livestock.mother;
+      inserminatorController.text=widget.livestock.inseminator;
+    }
+
     persianDatePicker = PersianDatePicker(
       controller: birthController,
 //      datetime: '1397/06/09',
@@ -72,7 +86,7 @@ class _NewAnimalState extends State<NewAnimal> {
 
   @override
   Widget build(BuildContext context) {
-    if (!isInitialized) {
+    if (!isInitialized && widget.livestock==null) {
       isInitialized = true;
       setState(() {
         currentFocus=_tagFocus;
@@ -86,7 +100,10 @@ class _NewAnimalState extends State<NewAnimal> {
             SliverAppBar(
               leading: BackButton(),
               centerTitle: true,
-              title:Text("دام جدید")
+              title:Text(widget.livestock!=null?
+                "ویرایش دام"
+                :"دام جدید"
+              )
             ),
             SliverPadding(
               padding: EdgeInsets.all(20),
@@ -155,12 +172,26 @@ class _NewAnimalState extends State<NewAnimal> {
                             "gender":genderController.text,
                             "mother":motherController.text,
                             "inseminator":inserminatorController.text,
+                            "_id":widget.livestock.id
                             // "state":stateController.text,
                           });
+                          
+                          var response;
+                          if(widget.livestock!=null){
+                            response=await _livestockRepository.putLivestock(widget.livestock.id,body);
+                          }else{
+                            response=await _livestockRepository.postLivestock(body);
+                          }
 
-                          var response=await _livestockRepository.postLivestock(body);
                           if(response.status==Status.COMPLETED){
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Detail(livestock: response.data,)));
+                            if(widget.livestock!=null){
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Detail(livestock: response.data,)));
+                            }else{
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Detail(livestock: response.data,)));
+                            }
+                            
                           }else{
                             Scaffold
                               .of(context)

@@ -92,12 +92,12 @@ class _DashboardState extends State<Dashboard> {
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 children: <Widget>[
-                  SummaryCard(0,"تلقیح", _dashboard.insemination.toString().padLeft(2,"0")),
-                  SummaryCard(1,"شیر خوار", _dashboard.milked.toString().padLeft(2,"0")),
-                  SummaryCard(2,'تلیسه', _dashboard.heifer.toString().padLeft(2,"0")),
-                  SummaryCard(3,'سقط', _dashboard.abortion.toString().padLeft(2,"0")),
-                  SummaryCard(4,"نر", _dashboard.bull.toString().padLeft(2,"0")),
-                  SummaryCard(5,"ماده", _dashboard.cow.toString().padLeft(2,"0")),
+                  SummaryCard(0,"تلقیح", _dashboard.insemination.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["تلقیح"], []))),
+                  SummaryCard(1,"شیرخوار", _dashboard.milked.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["شیرخوار"], []))),
+                  SummaryCard(2,'تلیسه', _dashboard.heifer.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["تلیسه"], []))),
+                  SummaryCard(3,'سقط', _dashboard.abortion.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["سقط"], []))),
+                  SummaryCard(4,"نر", _dashboard.bull.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData([], ["نر"]))),
+                  SummaryCard(5,"ماده", _dashboard.cow.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData([], ["ماده"]))),
                 ],
               )
             ]),

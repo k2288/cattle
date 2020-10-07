@@ -229,10 +229,10 @@ class _DetailState extends State<Detail> {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   children: <Widget>[
-                    SummaryCard(0,"تولد",  "${widget.livestock.birthDate}",),
-                    SummaryCard(1,"جنسیت", widget.livestock.gender.toString()),
-                    SummaryCard(2,'مادر', widget.livestock.mother),
-                    SummaryCard(3,'تلقیح کننده', widget.livestock.inseminator),
+                    SummaryCard(0,"تولد",  "${widget.livestock.birthDate}",null),
+                    SummaryCard(1,"جنسیت", widget.livestock.gender.toString(),null),
+                    SummaryCard(2,'مادر', widget.livestock.mother,null),
+                    SummaryCard(3,'تلقیح کننده', widget.livestock.inseminator,null),
                   ],
                 ),
                 SizedBox(

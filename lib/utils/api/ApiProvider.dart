@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cattle/utils/PinConfig.dart';
 import 'package:cattle/utils/api/CustomException.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,7 @@ import 'dart:convert';
 
 
 class ApiProvider{
-  static const String API_URL = "192.168.43.240";
+  static const String API_URL = PinConfig.RAW_URL;
 
   static final ApiProvider _instance=ApiProvider._internal();
   String token;

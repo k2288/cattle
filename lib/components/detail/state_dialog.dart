@@ -46,6 +46,7 @@ class _StateDialogState extends State<StateDialog> {
 
     stateValue=widget._livestockState.state;
     stateController.text=widget._livestockState.state;
+    descriptionController.text=widget._livestockState.description;
 
     super.initState();
   }

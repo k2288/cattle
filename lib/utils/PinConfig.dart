@@ -1,3 +1,5 @@
 class PinConfig{
-  static String APP_URL="http://192.168.43.240";
+  
+  static const String RAW_URL="86.106.142.58:3030";
+  static const String APP_URL="http://$RAW_URL";
 }

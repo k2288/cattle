@@ -19,7 +19,7 @@ import 'package:persian_datepicker/persian_datepicker.dart';
 
 
 class Detail extends StatefulWidget {
-  Livestock livestock;
+  final Livestock livestock;
 
   Detail({this.livestock});
 
@@ -219,7 +219,7 @@ class _DetailState extends State<Detail> {
               SizedBox(
                   height: 10,
                 ),
-                Text("مشخصات",style: Theme.of(context).textTheme.title),
+                Text("مشخصات",style: Theme.of(context).textTheme.headline6),
                 SizedBox(
                   height: 10,
                 ),
@@ -238,7 +238,7 @@ class _DetailState extends State<Detail> {
                 SizedBox(
                   height: 10,
                 ),
-                _logs.length>0?Text("تاریخچه",style: Theme.of(context).textTheme.title):Container(),
+                _logs.length>0?Text("تاریخچه",style: Theme.of(context).textTheme.headline6):Container(),
                 SizedBox(
                   height: 10,
                 ),
@@ -295,7 +295,7 @@ class _DetailState extends State<Detail> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(item.state,style: Theme.of(context).textTheme.display3,),
+                              Text(item.state,style: Theme.of(context).textTheme.headline2,),
                             ],
                           )
                         )),
@@ -307,7 +307,7 @@ class _DetailState extends State<Detail> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Center(child:Text(item.date,style: Theme.of(context).textTheme.display3,)),
+                              Center(child:Text(item.date,style: Theme.of(context).textTheme.headline2,)),
                             ],
                           )
                         )),

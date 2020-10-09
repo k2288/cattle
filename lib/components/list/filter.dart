@@ -32,7 +32,7 @@ class _FilterState extends State<Filter> {
           children: [
             Align(
               alignment: Alignment.centerRight,
-              child: Text("وضعیت : ",style: Theme.of(context).textTheme.display2),
+              child: Text("وضعیت : ",style: Theme.of(context).textTheme.headline3),
             ),
 
             Align(
@@ -52,7 +52,7 @@ class _FilterState extends State<Filter> {
             // SizedBox(height: 10,),
             Align(
               alignment: Alignment.centerRight,
-              child: Text("جنسیت : ",style: Theme.of(context).textTheme.display2),
+              child: Text("جنسیت : ",style: Theme.of(context).textTheme.headline3),
             ),
             Align(
               alignment: Alignment.centerRight,

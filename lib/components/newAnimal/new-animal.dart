@@ -15,7 +15,7 @@ import 'package:persian_datepicker/persian_datetime.dart';
 
 class NewAnimal extends StatefulWidget {
 
-  Livestock livestock;
+  final Livestock livestock;
   NewAnimal({this.livestock});
 
   @override
@@ -26,7 +26,6 @@ class _NewAnimalState extends State<NewAnimal> {
 
   LivestockRepository _livestockRepository;
 
-  final _formKey = GlobalKey<FormState>();
   final tagController = TextEditingController();
   final birthController = TextEditingController();
   final genderController = TextEditingController();
@@ -34,16 +33,16 @@ class _NewAnimalState extends State<NewAnimal> {
   final motherController = TextEditingController();
   final inserminatorController = TextEditingController();
   String _genderValue;
-  String _stateValue;
+  // String _stateValue;
 
   final FocusNode _tagFocus = FocusNode();  
   final FocusNode _birthFocus = FocusNode();
   final FocusNode _genderFocus = FocusNode();
-  final FocusNode _stateFocus = FocusNode();
+  // final FocusNode _stateFocus = FocusNode();
   final FocusNode _motherFocus = FocusNode();
   final FocusNode _inseminatorFocus = FocusNode();
 
-  final FocusScopeNode _node = FocusScopeNode();
+  // final FocusScopeNode _node = FocusScopeNode();
 
   PersianDatePickerWidget persianDatePicker;
 
@@ -52,7 +51,7 @@ class _NewAnimalState extends State<NewAnimal> {
   bool isInitialized=false;
   List<dynamic> genders =['نر','ماده'];
   List<dynamic> states =[];//=['نوع ۲','نوع ۱'];
-  DateTime _birth=DateTime.now();
+  // DateTime _birth=DateTime.now();
   
 
   @override
@@ -111,13 +110,13 @@ class _NewAnimalState extends State<NewAnimal> {
                 delegate: SliverChildListDelegate([
                   Input("شماره تگ",tagController,()=>{},true,_tagFocus,(str)=>_changeFieldFocus(_birthFocus),false),
                   SizedBox(height: 20),
-                  Input("تاریخ تولد",birthController,()=>{
-                    FocusScope.of(context).requestFocus(new FocusNode()), // to prevent opening default keyboard
+                  Input("تاریخ تولد",birthController,(){
+                    FocusScope.of(context).requestFocus(new FocusNode()); // to prevent opening default keyboard
                     showModalBottomSheet(
                       context: context,
                       builder: (BuildContext context) {
                         return persianDatePicker;
-                    })
+                    });
 
                   },false,_birthFocus,(str)=>{},false),
                   SizedBox(height: 20,),

@@ -30,8 +30,8 @@ class MainDashboardCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text(_count,style: Theme.of(context).textTheme.display1),
-                    Text(_title.toString(),style: Theme.of(context).textTheme.display1)
+                    Text(_count,style: Theme.of(context).textTheme.headline4),
+                    Text(_title.toString(),style: Theme.of(context).textTheme.headline4)
                   ],
                 ),
               ),

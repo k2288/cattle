@@ -12,7 +12,7 @@ class UserRepository{
       final response =await _provider.get("/v1/users/me");
       return Response.completed(User.fromJSON(response));
     }catch (e){
-      print(e);
+      return Response.error(e.toString());
     }
   }
 }

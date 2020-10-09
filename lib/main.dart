@@ -44,14 +44,14 @@ class CattleApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFFf8f9fe),
         primarySwatch: Colors.blue,
         textTheme: TextTheme(
-          display1: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 13),
-          display2: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 15),
-          display3: TextStyle(color: Colors.grey[700],fontWeight: FontWeight.bold,fontSize: 15),
-          display4: TextStyle(color: Colors.black,fontSize: 20),//detail
+          headline4: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 13),
+          headline3: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 15),
+          headline2: TextStyle(color: Colors.grey[700],fontWeight: FontWeight.bold,fontSize: 15),
+          headline1: TextStyle(color: Colors.black,fontSize: 20),//detail
 
           button:TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20) ,
 
-          subtitle:TextStyle(color: Colors.black,fontSize: 13)
+          subtitle2:TextStyle(color: Colors.black,fontSize: 13)
         )
 
       ),

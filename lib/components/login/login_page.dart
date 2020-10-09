@@ -1,16 +1,10 @@
 import 'dart:convert';
-
 import 'package:cattle/components/login/otp_page.dart';
-import 'package:cattle/home.dart';
 import 'package:cattle/repositories/AuthRepository.dart';
-import 'package:cattle/repositories/SettingRespository.dart';
-import 'package:cattle/utils/SettingsProvider.dart';
-import 'package:cattle/utils/api/ApiProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 
 
 class LoginPage extends StatefulWidget {

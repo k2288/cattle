@@ -167,8 +167,8 @@ class _CattleListState extends State<CattleList> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(item.gender,style: Theme.of(context).textTheme.display3,),
-                                Text(item.tagNo,style: Theme.of(context).textTheme.display2,),
+                                Text(item.gender,style: Theme.of(context).textTheme.headline2,),
+                                Text(item.tagNo,style: Theme.of(context).textTheme.headline3,),
                                 
                               ],
                             )
@@ -188,7 +188,7 @@ class _CattleListState extends State<CattleList> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Center(child:Text(item.state??"تولد",style: Theme.of(context).textTheme.display3)),
+                                Center(child:Text(item.state??"تولد",style: Theme.of(context).textTheme.headline2)),
                                 Center(child: Text(item.state!=null?item.lastStateDate:item.birthDate,style:TextStyle(fontSize: 12)))
                                 
                                 // Icon(FontAwesomeIcons.sort,color: Colors.white,)

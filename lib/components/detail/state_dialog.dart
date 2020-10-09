@@ -106,14 +106,14 @@ class _StateDialogState extends State<StateDialog> {
                 focus: null,
               ),
               SizedBox(height: 24.0),
-              Input("تاریخ ",stateDateController,()=>{
+              Input("تاریخ ",stateDateController,(){
                     
-                  FocusScope.of(context).requestFocus(new FocusNode()), // to prevent opening default keyboard
+                  FocusScope.of(context).requestFocus(new FocusNode()); // to prevent opening default keyboard
                   showModalBottomSheet(
                     context: context,
                     builder: (BuildContext context) {
                       return persianDatePicker;
-                    })
+                    });
                     // DatePicker.showDatePicker(context,locale: LocaleType.fa,onConfirm: _confirmStateDate,currentTime: stateDate)
 
                   },false,null,(str)=>{},false),

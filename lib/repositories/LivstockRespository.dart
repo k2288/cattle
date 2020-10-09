@@ -20,7 +20,7 @@ class LivestockRepository{
 
   Future<Response> putLivestock(id,body)async{
     try{
-      final response= await _apiProvider.put("/v1/livestock/$id",body);
+      await _apiProvider.put("/v1/livestock/$id",body);
       return Response.completed(Livestock.fromJSON(jsonDecode( body)));
 
     }catch (e){

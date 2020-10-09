@@ -60,7 +60,7 @@ class SummaryCard extends StatelessWidget {
             ),
             Flexible(
               child: Container(
-                child: Center(child: Text(_title,style: Theme.of(context).textTheme.subtitle,)) ,
+                child: Center(child: Text(_title,style: Theme.of(context).textTheme.subtitle2,)) ,
               ),
               flex: 1,
             )

@@ -30,9 +30,9 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     getData();
+    super.initState();
+    
   }
 
   Future<void> getData()async{
@@ -82,7 +82,7 @@ class _DashboardState extends State<Dashboard> {
                   MainDashboardCard(Color(0xff48294b),"00.00"," میانگین شیر/گاو (Kg)","assets/images/milk.svg",null),
                 ],
               ),
-              Text("خلاصه وضعیت",style: Theme.of(context).textTheme.title),
+              Text("خلاصه وضعیت",style: Theme.of(context).textTheme.headline6),
               GridView.count(
                 crossAxisCount: 3,
                 padding: _topBottomPadding,

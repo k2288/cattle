@@ -127,13 +127,13 @@ class _OtpPageState extends State<OtpPage> {
                         var response = await _authRepository.postCode(jsonEncode(<String, String>{"code":text}));
                         if(Status.COMPLETED==response.status){
                           
-                          ApiProvider().setToken(response.data.token.toString());
+                          await ApiProvider().setToken(response.data.token.toString());
 
                           Response settingsResponse=await _settingRepository.get();
 
                           SettingsProvider().setSettings(settingsResponse.data);
-
-                          Navigator.push(
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => HomePage()),
                           );

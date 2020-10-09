@@ -25,7 +25,7 @@ class ApiProvider{
     token=t;
   }
 
-  void setToken(String t)async{
+  Future<void> setToken(String t)async{
     FlutterSecureStorage storage = FlutterSecureStorage();
     await storage.write(key: "token",value: t);
     token=t;

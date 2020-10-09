@@ -54,14 +54,7 @@ class _SplashPageState extends State<SplashPage> {
           MaterialPageRoute(builder: (context) => HomePage()),
         );
       }else{
-        Scaffold
-          .of(context)
-          .showSnackBar(SnackBar(
-              content: Text(response.message,style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Colors.red,
-            )
-          );
+        doStuffCallback();
       }
 
     }else{

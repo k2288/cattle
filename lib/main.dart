@@ -1,15 +1,33 @@
+import 'dart:async';
+
 import 'package:cattle/components/splash/splash_page.dart';
 import 'package:cattle/utils/api/ApiProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sentry/sentry.dart';
+
+final sentry = SentryClient(dsn: "https://bd54fe34ae6842839c652a7ab201b220@o459244.ingest.sentry.io/5458076");
+
 Future main() async{
 
-  WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded(
+    () async{
+        WidgetsFlutterBinding.ensureInitialized();
 
-  ApiProvider apiProvider=new ApiProvider();
-  await apiProvider.init();
+        ApiProvider apiProvider=new ApiProvider();
+        await apiProvider.init();
 
-  runApp(CattleApp());
+        runApp(CattleApp());
+    },
+    (error, stackTrace) async {
+      await sentry.captureException(
+        exception: error,
+        stackTrace: stackTrace,
+      );
+    },
+  );
+
+
 }
 
 class CattleApp extends StatelessWidget {

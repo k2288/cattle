@@ -82,7 +82,7 @@ class _DetailState extends State<Detail> {
     });
     if(response.status==Status.COMPLETED){
       setState(() {
-        _logs.addAll(response.data.content);  
+        _logs.addAll(response.data.contents);  
         _offset=response.data.offset;
         _pageSize=response.data.pageSize;
         _totalItems=response.data.totalElements;

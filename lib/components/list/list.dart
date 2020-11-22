@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cattle/components/detail/detail.dart';
 import 'package:cattle/components/list/filter.dart';
 import 'package:cattle/models/livestock.dart';
@@ -70,16 +68,19 @@ class _CattleListState extends State<CattleList> {
       });
     }
 
-    var response =await _livestockRepository.getLivestockList({
-      "state":filterData.states.length>0?jsonEncode(filterData.states):null ,
-      "type":filterData.type.length>0? jsonEncode(filterData.type):null,
+    var params={
+      "state":filterData.states.length>0?filterData.states:null,
+      "type":filterData.type.length>0? filterData.type:null,
       "offset":(_offset+_pageSize).toString(),
       "pageSize":_pageSize.toString(),
       "searchTerm":searchQuery!=""?searchQuery:null
-    });
+    };
+    params.removeWhere((key, value) => value==null) ;
+    var response =await _livestockRepository.getLivestockList(params);
     if(response.status==Status.COMPLETED){
+      print(response.data.contents);
       setState(() {
-        _livestockList.addAll(response.data.content) ;
+        _livestockList.addAll(response.data.contents) ;
         _offset=response.data.offset;
         _pageSize=response.data.pageSize;
         _totalItems=response.data.totalElements;

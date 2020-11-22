@@ -8,7 +8,7 @@ class AuthRepository{
 
   Future<Response> postUser(body)async{
     try{
-      final response = await _apiProvider.post("/v1/users",body);
+      final response = await _apiProvider.post("/v1/auth/phone",body);
       return Response.completed( response);
     }catch (e){
       return Response.error(e.toString());
@@ -18,6 +18,7 @@ class AuthRepository{
   Future<Response> postCode(body)async{
     try{
       final response = await _apiProvider.post("/v1/auth/code",body);
+      print(response.runtimeType);
       return Response.completed( LoginResponse.fromJSON( response));
     }catch (e){
       return Response.error(e.toString());

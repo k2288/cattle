@@ -21,7 +21,10 @@ class LivestockRepository{
   Future<Response> putLivestock(id,body)async{
     try{
       await _apiProvider.put("/v1/livestock/$id",body);
-      return Response.completed(Livestock.fromJSON(jsonDecode( body)));
+      var newBody=jsonDecode( body);
+      newBody["_id"]=id;
+
+      return Response.completed(Livestock.fromJSON(newBody));
 
     }catch (e){
       return Response.error(e.toString());
@@ -87,30 +90,30 @@ class LivestockRepository{
 }
 
 class LiveStockResponse{
-  List<Livestock> content;
+  List<Livestock> contents;
   int totalElements;
   int offset;
   int pageSize;
 
-  LiveStockResponse({this.content});
+  LiveStockResponse({this.contents});
 
   LiveStockResponse.fromJSON(Map<String,dynamic> json)
-    : content=json["content"]!=null?(json["content"] as List).map((e) => Livestock.fromJSON(e)).toList():[],
+    : contents=json["contents"]!=null?(json["contents"] as List).map((e) => Livestock.fromJSON(e)).toList():[],
       totalElements=json["totalElements"],
       offset=json["offset"],
       pageSize=json["pageSize"];
 }
 
 class LiveStockStateResponse{
-  List<LivestockState> content;
+  List<LivestockState> contents;
   int totalElements;
   int offset;
   int pageSize;
 
-  LiveStockStateResponse({this.content});
+  LiveStockStateResponse({this.contents});
 
   LiveStockStateResponse.fromJSON(Map<String,dynamic> json)
-    : content=json["content"]!=null?(json["content"] as List).map((e) => LivestockState.fromJSON(e)).toList():[],
+    : contents=json["contents"]!=null?(json["contents"] as List).map((e) => LivestockState.fromJSON(e)).toList():[],
       totalElements=json["totalElements"],
       offset=json["offset"],
       pageSize=json["pageSize"];

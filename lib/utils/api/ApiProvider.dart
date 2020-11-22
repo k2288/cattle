@@ -22,22 +22,31 @@ class ApiProvider{
   Future<void> init()async{
     FlutterSecureStorage storage = FlutterSecureStorage();
     String t=await storage.read(key: "token");
-    token=t;
+    token="Bearer "+t;
   }
 
   Future<void> setToken(String t)async{
     FlutterSecureStorage storage = FlutterSecureStorage();
     await storage.write(key: "token",value: t);
-    token=t;
+    token="Bearer "+t;
   }
 
 
   Future<dynamic> get(dynamic url,[params]) async {
     var uri;
     if(params!=null){
-      uri=Uri.http(API_URL,"/api"+url, params);
+        uri = Uri(
+          scheme: 'http',
+
+          host: PinConfig.IP,
+          port: PinConfig.PORT,
+          path: url,
+          queryParameters: params,
+        );
+        print(uri);
+      // uri=Uri.http(API_URL,url, params);
     }else{
-      uri=Uri.http(API_URL,"/api"+url);
+      uri=Uri.http(API_URL,url);
     }
 
 
@@ -46,7 +55,7 @@ class ApiProvider{
       final response = await http.get(uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "x-auth-token":token
+          "Authorization":token
         },
       );
       responseJson = _response(response);
@@ -60,13 +69,14 @@ class ApiProvider{
 
   Future<dynamic> post(String url,body) async {
     var responseJson;
-    var uri=Uri.http(API_URL,"/api"+url);
+    var uri=Uri.http(API_URL,url);
+    print(uri);
     try {
       final response = await http.post(uri,
         body:body,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "x-auth-token":token
+          "Authorization":token
         },
       );
       responseJson = _response(response);
@@ -78,13 +88,13 @@ class ApiProvider{
 
   Future<dynamic> put(String url,body) async {
     var responseJson;
-    var uri=Uri.http(API_URL,"/api"+url);
+    var uri=Uri.http(API_URL,url);
     try {
       final response = await http.put(uri,
         body:body,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "x-auth-token":token
+          "Authorization":token
         },
       );
       responseJson = _response(response);
@@ -96,12 +106,12 @@ class ApiProvider{
 
   Future<dynamic> delete(String url) async {
     var responseJson;
-    var uri=Uri.http(API_URL,"/api"+url);
+    var uri=Uri.http(API_URL,url);
     try {
       final response = await http.delete(uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "x-auth-token":token
+          "Authorization":token
         },
       );
       responseJson = _response(response);
@@ -120,7 +130,7 @@ class ApiProvider{
         var responseJson = json.decode(response.body.toString());
         return responseJson;
       case 201:
-        return response.body;
+        return json.decode(response.body.toString());
       case 400:
         throw BadRequestException(response.body.toString());
       case 401:

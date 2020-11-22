@@ -122,7 +122,7 @@ class _NewAnimalState extends State<NewAnimal> {
                   SizedBox(height: 20,),
                   DropDown(
                     hint: "جنسیت",
-                    items: genders,
+                    items: SettingsProvider().getSettings().livestockType,
                     value: _genderValue,
                     onChanged: (value){
                       setState((){
@@ -165,21 +165,23 @@ class _NewAnimalState extends State<NewAnimal> {
 
                           
 
-                          var body=jsonEncode(<String, dynamic>{
+                          var body=<String, dynamic>{
                             "tagNo":tagController.text,
                             "birthDate":PersianDateTime(jalaaliDateTime: birthController.text).toGregorian(),
                             "gender":genderController.text,
                             "mother":motherController.text,
                             "inseminator":inserminatorController.text,
-                            "_id":widget.livestock!=null?widget.livestock.id:null
                             // "state":stateController.text,
-                          });
+                          };
+
+                          
                           
                           var response;
+                          print(widget.livestock!=null);
                           if(widget.livestock!=null){
-                            response=await _livestockRepository.putLivestock(widget.livestock.id,body);
+                            response=await _livestockRepository.putLivestock(widget.livestock.id,jsonEncode(body));
                           }else{
-                            response=await _livestockRepository.postLivestock(body);
+                            response=await _livestockRepository.postLivestock(jsonEncode(body));
                           }
 
                           if(response.status==Status.COMPLETED){

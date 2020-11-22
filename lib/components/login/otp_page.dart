@@ -10,7 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:numeric_keyboard/numeric_keyboard.dart';
 
 class OtpPage extends StatefulWidget {
-  const OtpPage({Key key}) : super(key: key);
+
+  final String phoneNumber;
+
+  const OtpPage(this.phoneNumber);
   @override
   _OtpPageState createState() => _OtpPageState();
 }
@@ -124,7 +127,7 @@ class _OtpPageState extends State<OtpPage> {
                     child: RaisedButton(
                       onPressed: () async{
 
-                        var response = await _authRepository.postCode(jsonEncode(<String, String>{"code":text}));
+                        var response = await _authRepository.postCode(jsonEncode(<String, dynamic>{"code":text,"phone":widget.phoneNumber.toString()}));
                         if(Status.COMPLETED==response.status){
                           
                           await ApiProvider().setToken(response.data.token.toString());

@@ -8,7 +8,7 @@ import 'dart:convert';
 
 
 class ApiProvider{
-  static const String API_URL = PinConfig.RAW_URL;
+  static const String API_URL = "${PinConfig.IP}:${PinConfig.PORT}";
 
   static final ApiProvider _instance=ApiProvider._internal();
   String token;
@@ -22,7 +22,12 @@ class ApiProvider{
   Future<void> init()async{
     FlutterSecureStorage storage = FlutterSecureStorage();
     String t=await storage.read(key: "token");
-    token="Bearer "+t;
+    if(t!=null){
+      token="Bearer "+t;
+    }else{
+      token="";
+    }
+    
   }
 
   Future<void> setToken(String t)async{
@@ -43,7 +48,6 @@ class ApiProvider{
     if(params!=null){
         uri = Uri(
           scheme: 'http',
-
           host: PinConfig.IP,
           port: PinConfig.PORT,
           path: url,

@@ -14,7 +14,7 @@ class PinImage extends StatelessWidget {
     return Container(
       child: CachedNetworkImage(
         placeholder: (context, url) => CircularProgressIndicator(),
-        imageUrl: '${PinConfig.APP_URL}$url',
+        imageUrl: 'http://${PinConfig.IP}:${PinConfig.PORT}$url',
         errorWidget: (context, url, error) => Icon(Icons.error),
       ),
     );

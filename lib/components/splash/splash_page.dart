@@ -5,6 +5,7 @@ import 'package:cattle/repositories/SettingRespository.dart';
 import 'package:cattle/repositories/UserRepository.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
+import 'package:cattle/widgets/PinSnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserRepository _userRepository;
   SettingRepository _settingRepository;
 
@@ -52,13 +54,13 @@ class _SplashPageState extends State<SplashPage> {
       Provider.of<LocaleModel>(context,listen: false).initLocalFromStorage();
 
       if(response.status==Status.COMPLETED){
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
       }else{
-        doStuffCallback();
+        _scaffoldKey.currentState.showSnackBar(PinSnackBar(response.message).get());
+        // doStuffCallback();
       }
 
     }else{
@@ -67,13 +69,17 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   doStuffCallback(){
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LoginPage()), (Route<dynamic> route) => false);
+    // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LoginPage()), (Route<dynamic> route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Theme.of(context).primaryColor,
+      body: Center(
+        child: Image.asset("assets/images/splash.png",width: MediaQuery.of(context).size.width/3,),
+      ),
     );
   }
 }

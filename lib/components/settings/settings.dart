@@ -1,5 +1,7 @@
+import 'package:cattle/components/login/login_page.dart';
 import 'package:cattle/components/settings/language.dart';
 import 'package:cattle/models/LocaleModel.dart';
+import 'package:cattle/utils/api/ApiProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -16,7 +18,7 @@ class _SettingsState extends State<Settings> {
     return SettingsList(
         sections: [
           SettingsSection(
-            title: AppLocalizations.of(context).setting_language,
+            title: AppLocalizations.of(context).setting_common_section,
             tiles: [
               SettingsTile(
                 title: AppLocalizations.of(context).setting_language,
@@ -30,7 +32,8 @@ class _SettingsState extends State<Settings> {
                 title:AppLocalizations.of(context).setting_sign_out,
                 leading: Icon(Icons.exit_to_app),
                 onTap: () {
-
+                  ApiProvider().emptyToken();
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginPage()));
                 },
               ),
             ],

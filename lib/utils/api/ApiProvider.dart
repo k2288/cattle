@@ -31,6 +31,12 @@ class ApiProvider{
     token="Bearer "+t;
   }
 
+  emptyToken() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    await storage.write(key: "token",value: "");
+    token="";
+  }
+
 
   Future<dynamic> get(dynamic url,[params]) async {
     var uri;
@@ -43,8 +49,6 @@ class ApiProvider{
           path: url,
           queryParameters: params,
         );
-        print(uri);
-      // uri=Uri.http(API_URL,url, params);
     }else{
       uri=Uri.http(API_URL,url);
     }

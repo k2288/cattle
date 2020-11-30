@@ -252,5 +252,10 @@
   "setting_language_title":"انتخاب زبان",
   "@setting_language_title":{
     "description":""
+  },
+
+  "setting_common_section":"عمومی",
+  "@setting_common_section":{
+    "description":""
   }
 }

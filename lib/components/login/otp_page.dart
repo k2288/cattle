@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cattle/home.dart';
+import 'package:cattle/models/LocaleModel.dart';
 import 'package:cattle/repositories/AuthRepository.dart';
 import 'package:cattle/repositories/SettingRespository.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
@@ -105,6 +106,7 @@ class _OtpPageState extends State<OtpPage> {
                               maxWidth: 500
                           ),
                           child: Row(
+                            textDirection: Language.isRtl(context) ? TextDirection.ltr:TextDirection.rtl,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[

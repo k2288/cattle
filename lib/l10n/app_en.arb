@@ -251,5 +251,10 @@
   "setting_language_title":"Choose Language",
   "@setting_language_title":{
     "description":""
+  },
+
+  "setting_common_section":"Common",
+  "@setting_common_section":{
+    "description":""
   }
 }

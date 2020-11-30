@@ -1,11 +1,17 @@
+import 'dart:convert';
+
 import 'package:cattle/components/newAnimal/drop_down.dart';
 import 'package:cattle/components/newAnimal/input.dart';
 import 'package:cattle/models/LivestockState.dart';
+import 'package:cattle/models/LocaleModel.dart';
+import 'package:cattle/utils/DateUtil.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:persian_date/persian_date.dart';
 import 'package:persian_datepicker/persian_datepicker.dart';
 import 'package:persian_datepicker/persian_datetime.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class StateDialog extends StatefulWidget {
@@ -32,16 +38,19 @@ class _StateDialogState extends State<StateDialog> {
   @override
   void initState() {
 
-    if(widget._livestockState.date!=null){
-      stateDateController.text=widget._livestockState.date;
-    }else{
-  
-      stateDateController.text= PersianDate().gregorianToJalali(DateTime.now().toString(),"yyyy/mm/d");
-    }
+    Future.delayed(Duration.zero,(){
+      if(widget._livestockState.date!=null){
+        stateDateController.text= DateUtil.formatLocaleDate(widget._livestockState.date, context) ;
+      }else{
+    
+        stateDateController.text=DateUtil.formatLocaleDate(DateTime.now().toString(), context) ;  
+      }
+    });
+
+
     
     persianDatePicker = PersianDatePicker(
       controller: stateDateController,
-      // datetime: widget._livestockState.date,
     ).init();
 
     stateValue=widget._livestockState.state;
@@ -93,8 +102,13 @@ class _StateDialogState extends State<StateDialog> {
             mainAxisSize: MainAxisSize.min, // To make the card compact
             children: <Widget>[
               DropDown(
-                hint: "نوع",
-                items: SettingsProvider().getSettings().livestockState,
+                hint: AppLocalizations.of(context).state_dialog_type,
+                items: SettingsProvider().getSettings().livestockState.map((item){
+                      return DropdownMenuItem<String>(
+                        child: Text(jsonDecode(item.title)[Localizations.localeOf(context).languageCode]),
+                        value: item.value
+                      );
+                    }).toList(),
                 value: stateValue,
                 onChanged: (newValue){
                   print(newValue);
@@ -106,19 +120,28 @@ class _StateDialogState extends State<StateDialog> {
                 focus: null,
               ),
               SizedBox(height: 24.0),
-              Input("تاریخ ",stateDateController,(){
+              Input(AppLocalizations.of(context).state_dialog_date,stateDateController,() async {
+                  if(Language.isRtl(context)){
+                    FocusScope.of(context).requestFocus(new FocusNode()); // to prevent opening default keyboard
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return persianDatePicker;
+                      });
                     
-                  FocusScope.of(context).requestFocus(new FocusNode()); // to prevent opening default keyboard
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return persianDatePicker;
-                    });
-                    // DatePicker.showDatePicker(context,locale: LocaleType.fa,onConfirm: _confirmStateDate,currentTime: stateDate)
-
-                  },false,null,(str)=>{},false),
+                  }else{
+                    final DateTime picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.parse(stateDateController.text),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2025),
+                      );
+                      if(picked != null)
+                        stateDateController.text= DateFormat("yyyy-MM-dd").format(picked);
+                  }
+                },false,null,(str)=>{},false),
               SizedBox(height: 24.0),
-              Input("توضیحات",descriptionController,()=>{},true,null,(str)=>{},true),
+              Input(AppLocalizations.of(context).state_dialog_description,descriptionController,()=>{},true,null,(str)=>{},true),
 
               SizedBox(height: 24.0),
               Row(
@@ -130,15 +153,13 @@ class _StateDialogState extends State<StateDialog> {
                         
                         var body=<String,dynamic>{
                           "state":stateController.text,
-                          "date":PersianDateTime(jalaaliDateTime: stateDateController.text).toGregorian() ,
+                          "date":Language.isRtl(context) ? PersianDateTime(jalaaliDateTime: stateDateController.text).toGregorian():stateDateController.text ,
                           "description":descriptionController.text,
                           "id":widget._livestockState.id
                         };
-                        
-
                         widget._saveStateHandler(body);                    
                       },
-                      child: Text("تایید"),
+                      child: Text(AppLocalizations.of(context).state_dialog_save),
                     ),
                   ),
                   Align(
@@ -147,7 +168,7 @@ class _StateDialogState extends State<StateDialog> {
                       onPressed: (){
                         Navigator.of(context).pop();
                       },
-                      child: Text("لغو"),
+                      child: Text(AppLocalizations.of(context).state_dialog_cancel),
                     ),
                   ),
                 ],

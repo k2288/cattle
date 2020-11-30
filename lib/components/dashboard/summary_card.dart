@@ -1,3 +1,4 @@
+import 'package:cattle/models/LocaleModel.dart';
 import "package:flutter/material.dart";
 
 class SummaryCard extends StatelessWidget {
@@ -16,10 +17,10 @@ class SummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: _index==2?Radius.circular(10): Radius.circular(0),
-          topRight: _index==0?Radius.circular(10): Radius.circular(0),
-          bottomLeft: _index==5?Radius.circular(10): Radius.circular(0),
-          bottomRight: _index==3?Radius.circular(10): Radius.circular(0),
+          topLeft: Language.isRtl(context)? (_index==2?Radius.circular(10): Radius.circular(0)):(_index==0?Radius.circular(10): Radius.circular(0)),
+          topRight:Language.isRtl(context)? (_index==0?Radius.circular(10): Radius.circular(0)):(_index==2?Radius.circular(10): Radius.circular(0)),
+          bottomLeft: Language.isRtl(context)?(_index==5?Radius.circular(10): Radius.circular(0)):(_index==3?Radius.circular(10): Radius.circular(0)),
+          bottomRight: Language.isRtl(context)?(_index==3?Radius.circular(10): Radius.circular(0)):(_index==5?Radius.circular(10): Radius.circular(0)),
         ),
         boxShadow: [
           BoxShadow(
@@ -54,7 +55,7 @@ class SummaryCard extends StatelessWidget {
                   color: Color(0xff39445a),
                   borderRadius: BorderRadius.circular(90)
                 ),
-                child: Text(_count.toString(),style: TextStyle(color: Colors.white),),
+                child: Text(_count=="null"?"":_count,style: TextStyle(color: Colors.white),overflow: TextOverflow.ellipsis,),
               ),
               flex: 2,
             ),

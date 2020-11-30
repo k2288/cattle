@@ -3,13 +3,17 @@ import 'dart:convert';
 import 'package:cattle/components/detail/detail.dart';
 import 'package:cattle/components/newAnimal/drop_down.dart';
 import 'package:cattle/components/newAnimal/input.dart';
+import 'package:cattle/models/LocaleModel.dart';
 import 'package:cattle/models/livestock.dart';
 import 'package:cattle/repositories/LivstockRespository.dart';
+import 'package:cattle/utils/DateUtil.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:persian_datepicker/persian_datepicker.dart';
 import 'package:persian_datepicker/persian_datetime.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 
@@ -49,30 +53,35 @@ class _NewAnimalState extends State<NewAnimal> {
 
   FocusNode currentFocus;
   bool isInitialized=false;
-  List<dynamic> genders =['نر','ماده'];
-  List<dynamic> states =[];//=['نوع ۲','نوع ۱'];
-  // DateTime _birth=DateTime.now();
+  
   
 
   @override
   void initState() {
+    persianDatePicker = PersianDatePicker(
+      controller: birthController,
+    ).init();
 
     if(widget.livestock!=null){
       tagController.text=widget.livestock.tagNo;
-      birthController.text=widget.livestock.birthDate;
       genderController.text=widget.livestock.gender;
       _genderValue=widget.livestock.gender;
       motherController.text=widget.livestock.mother;
       inserminatorController.text=widget.livestock.inseminator;
     }
 
-    persianDatePicker = PersianDatePicker(
-      controller: birthController,
-//      datetime: '1397/06/09',
-    ).init();
-
-    states=SettingsProvider().getSettings().livestockState;
+    // states=SettingsProvider().getSettings().livestockState;
     super.initState();
+
+
+
+    Future.delayed(Duration.zero,(){
+      if(widget.livestock!=null){
+        birthController.text= DateUtil.formatLocaleDate(widget.livestock.birthDate, context) ;
+      }
+    });
+
+
   }
 
   _NewAnimalState(){
@@ -100,39 +109,17 @@ class _NewAnimalState extends State<NewAnimal> {
               leading: BackButton(),
               centerTitle: true,
               title:Text(widget.livestock!=null?
-                "ویرایش دام"
-                :"دام جدید"
+                AppLocalizations.of(context).edit_animal_title
+                :AppLocalizations.of(context).new_animal_title
               )
             ),
             SliverPadding(
               padding: EdgeInsets.all(20),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  Input("شماره تگ",tagController,()=>{},true,_tagFocus,(str)=>_changeFieldFocus(_birthFocus),false),
-                  SizedBox(height: 20),
-                  Input("تاریخ تولد",birthController,(){
-                    FocusScope.of(context).requestFocus(new FocusNode()); // to prevent opening default keyboard
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return persianDatePicker;
-                    });
+                  Input(AppLocalizations.of(context).new_animal_tag_no,tagController,()=>{},true,_tagFocus,(str)=>_changeFieldFocus(_motherFocus),false),
+                  
 
-                  },false,_birthFocus,(str)=>{},false),
-                  SizedBox(height: 20,),
-                  DropDown(
-                    hint: "جنسیت",
-                    items: SettingsProvider().getSettings().livestockType,
-                    value: _genderValue,
-                    onChanged: (value){
-                      setState((){
-                        _genderValue=value;
-                      });
-                      genderController.text=value;
-                      // _changeFieldFocus(_motherFocus);
-                    },
-                    focus: _genderFocus,
-                  ),
                   SizedBox(height: 20), 
                   // DropDown(
                   //   hint: "وضعیت",
@@ -148,10 +135,50 @@ class _NewAnimalState extends State<NewAnimal> {
                   //   focus: _stateFocus,
                   // ),
                   SizedBox(height: 20), 
-                  Input("مادر",motherController,()=>{},true,_motherFocus,(str)=>_changeFieldFocus(_inseminatorFocus),false),
+                  Input(AppLocalizations.of(context).new_animal_mother,motherController,()=>{},true,_motherFocus,(str)=>_changeFieldFocus(_inseminatorFocus),false),
                   SizedBox(height: 20),
-                  Input("تلقیح کننده",inserminatorController,()=>{},true,_inseminatorFocus,(str)=>{},true),
-
+                  Input(AppLocalizations.of(context).new_animal_inserminator,inserminatorController,()=>{},true,_inseminatorFocus,(str)=>{},true),
+                  SizedBox(height: 20),
+                  Input(AppLocalizations.of(context).new_animal_birth,birthController,() async {
+                    if(Language.isRtl(context)){
+                      FocusScope.of(context).requestFocus(new FocusNode()); // to prevent opening default keyboard
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return persianDatePicker;
+                      });
+                    }else{
+                    
+                      final DateTime picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.parse(birthController.text),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2025),
+                      );
+                      if(picked != null)
+                        birthController.text= DateFormat("yyyy-MM-dd").format(picked);
+                    }
+                    
+                  },false,_birthFocus,(str)=>{},false),
+                  SizedBox(height: 20,),
+                  DropDown(
+                    hint: AppLocalizations.of(context).new_animal_gender,
+                    items: SettingsProvider().getSettings().livestockType.map((item){
+                      return DropdownMenuItem<String>(
+                        child: Text(jsonDecode(item.title)[Localizations.localeOf(context).languageCode]),
+                        value: item.value
+                      );
+                    }).toList(),
+                    value: _genderValue,
+                    onChanged: (value){
+                      setState((){
+                        _genderValue=value;
+                      });
+                      genderController.text=value;
+                      // _changeFieldFocus(_motherFocus);
+                    },
+                    focus: _genderFocus,
+                  ),
                   SizedBox(height: 20,),
                   Builder(
                     builder: (context){
@@ -167,7 +194,7 @@ class _NewAnimalState extends State<NewAnimal> {
 
                           var body=<String, dynamic>{
                             "tagNo":tagController.text,
-                            "birthDate":PersianDateTime(jalaaliDateTime: birthController.text).toGregorian(),
+                            "birthDate": Language.isRtl(context) ?  PersianDateTime(jalaaliDateTime: birthController.text).toGregorian():birthController.text,
                             "gender":genderController.text,
                             "mother":motherController.text,
                             "inseminator":inserminatorController.text,
@@ -177,7 +204,6 @@ class _NewAnimalState extends State<NewAnimal> {
                           
                           
                           var response;
-                          print(widget.livestock!=null);
                           if(widget.livestock!=null){
                             response=await _livestockRepository.putLivestock(widget.livestock.id,jsonEncode(body));
                           }else{
@@ -211,7 +237,7 @@ class _NewAnimalState extends State<NewAnimal> {
                           //       .showSnackBar(SnackBar(content: Text('Processing Data')));
                           // }
                         },
-                        child: Text('ذخیره دام',style: Theme.of(context).textTheme.button),
+                        child: Text(AppLocalizations.of(context).new_animal_save,style: Theme.of(context).textTheme.button),
                       );
                     }
                   )

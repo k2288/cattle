@@ -1,6 +1,7 @@
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:cattle/components/dashboard/dashboard.dart';
 import 'package:cattle/components/newAnimal/new-animal.dart';
+import 'package:cattle/components/settings/settings.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/fab_bottom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,11 +16,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // int _selectedIndex = 0;
+  PageController _pageController = PageController(initialPage: 0);
 
   void _onItemTapped(int index) {
-    // setState(() {
-    //   _selectedIndex = index;
-    // });
+    // _pageController.animateToPage(index,duration: Duration(milliseconds: 400),curve: Curves.easeInOut);
+    _pageController.jumpToPage(index);
   }
 
 
@@ -28,18 +29,47 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        
         actions: <Widget>[
             IconButton(icon: Icon(Icons.notifications_none,color: Colors.white,), onPressed: ()=>{}),
             IconButton(icon: Icon(FontAwesomeIcons.qrcode,color: Colors.white,), onPressed: _scaneBarcode),
           ],
-        title: Text("نام مجموعه"),
+        title: Text(" "),
       ),
-      body: Dashboard(),
+      body: PageView(
+        controller: _pageController,
+        children: <Widget>[
+          Center(
+            child: Container(
+              child: Dashboard(),
+            ),
+          ),
+          Center(
+            child: Container(
+              child: Text('Coming Soon'),
+            ),
+          ),
+          Center(
+            child: Container(
+              child: Text(''),
+            ),
+          ),
+          Center(
+            child: Container(
+              child: Text('Coming Soon'),
+            ),
+          ),
+          Center(
+            child: Container(
+              child: Settings(),
+            ),
+          )
+        ],
+        physics: NeverScrollableScrollPhysics(),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => NewAnimal())); },
-        tooltip: 'Increment',
+        tooltip: '',
         child: Icon(Icons.add),
         elevation: 2.0,
       ),

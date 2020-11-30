@@ -1,0 +1,255 @@
+{
+  "@@locale": "en",
+  "login_description_1":"We will send you an ",
+  "@login_description_1":{
+    "description":""
+  },
+  "login_description_2":"One Time Password",
+  "@login_description_2":{
+    "description":""
+  },
+  "login_description_3":" on this mobile number",
+  "@login_description_3":{
+    "description":""
+  },
+  "login_next":"Next",
+  "@login_next":{
+    "description":""
+  },
+  "login_phone_validation_error":"Please input correct phone number.",
+  "@login_phone_validation_error":{
+    "description":""
+  },
+  "login_phone_phone_input_placeholder":"+33...",
+  "@login_phone_phone_input_placeholder":{
+    "description":""
+  },
+  "otp_title":"Enter 6 digits verification code sent to your number",
+  "@otp_title":{
+    "description":""
+  },
+  "otp_confirm":"Confirm",
+  "@otp_confirm":{
+    "description":""
+  },
+
+  "dashboard_total_animal":"Total Animals",
+  "@dashboard_total_animal":{
+    "description":""
+  },
+
+  "dashboard_milking_cow":"Milking Cows",
+  "@dashboard_milking_cow":{
+    "description":""
+  },
+
+  "dashboard_dry_cow":"Dry Cows",
+  "@dashboard_dry_cow":{
+    "description":""
+  },
+
+  "dashboard_avg_milk":"Kgs Av.Milk/Cow",
+  "@dashboard_avg_milk":{
+    "description":""
+  },
+
+  "dashboard_insemination":"Insemination",
+  "@dashboard_insemination":{
+    "description":""
+  },
+
+  "dashboard_milked":"Milked",
+  "@dashboard_milked":{
+    "description":""
+  },
+
+  "dashboard_heifer":"Heifer",
+  "@dashboard_heifer":{
+    "description":""
+  },
+
+  "dashboard_abortion":"Abortion",
+  "@dashboard_abortion":{
+    "description":""
+  },
+
+  "dashboard_bull":"Bull",
+  "@dashboard_bull":{
+    "description":""
+  },
+
+  "dashboard_cow":"Cow",
+  "@dashboard_cow":{
+    "description":""
+  },
+
+  "dashboard_summary":"Summary",
+  "@dashboard_summary":{
+    "description":""
+  },
+
+  "filter_state":"State : ",
+  "@filter_state":{
+    "description":""
+  },
+  "filter_gender":"Gender : ",
+  "@filter_gender":{
+    "description":""
+  },
+  "filter_confirm":"Confirm Filters",
+  "@filter_confirm":{
+    "description":""
+  },
+  "filter_clear":"Clear Filters",
+  "@filter_clear":{
+    "description":""
+  },
+
+
+  "new_animal_title":"New Animal",
+  "@new_animal_title":{
+    "description":""
+  },
+
+  "edit_animal_title":"Edit Animal",
+  "@edit_animal_title":{
+    "description":""
+  },
+
+  "new_animal_tag_no":"Tag No.",
+  "@new_animal_tag_no":{
+    "description":""
+  },
+
+  "new_animal_mother":"Mother",
+  "@new_animal_mother":{
+    "description":""
+  },
+
+  "new_animal_inserminator":"Inseminator",
+  "@new_animal_inserminator":{
+    "description":""
+  },
+
+  "new_animal_birth":"Birth Date",
+  "@new_animal_birth":{
+    "description":""
+  },
+
+  "new_animal_gender":"Gender",
+  "@new_animal_gender":{
+    "description":""
+  },
+  "new_animal_save":"Save",
+  "@new_animal_save":{
+    "description":""
+  },
+
+  "list_not_found":"No matching animal found",
+  "@list_not_found":{
+    "description":""
+  },
+
+  "list_birth_state":"Birth",
+  "@list_birth_state":{
+    "description":""
+  },
+
+  "list_search_tag_no":"Search tag number...",
+  "@list_search_tag_no":{
+    "description":""
+  },
+
+  "list_animals":"Animals",
+  "@list_animals":{
+    "description":""
+  },
+
+  "detail_alert":"Alert",
+  "@detail_alert":{
+    "description":""
+  },
+
+  "detail_are_you_sure_delete":"Are you sure ?",
+  "@detail_are_you_sure_delete":{
+    "description":""
+  },
+
+  "detail_birth":"Birth",
+  "@detail_birth":{
+    "description":""
+  },
+
+  "detail_gender":"Gender",
+  "@detail_gender":{
+    "description":""
+  },
+
+  "detail_mother":"Mother",
+  "@detail_mother":{
+    "description":""
+  },
+
+  "detail_inseminator":"Inseminator",
+  "@detail_inseminator":{
+    "description":""
+  },
+
+  "detail_tag_no":"Tag No.",
+  "@detail_tag_no":{
+    "description":""
+  },
+
+  "detail_history":"History",
+  "@detail_history":{
+    "description":""
+  },
+
+  "state_dialog_type":"Type ",
+  "@state_dialog_type":{
+    "description":""
+  },
+
+  "state_dialog_date":"Date ",
+  "@state_dialog_date":{
+    "description":""
+  },
+
+  "state_dialog_description":"Description",
+  "@state_dialog_description":{
+    "description":""
+  },
+
+  "state_dialog_save":"Save",
+  "@state_dialog_save":{
+    "description":""
+  },
+
+  "state_dialog_cancel":"Cancel",
+  "@state_dialog_cancel":{
+    "description":""
+  },
+
+  "confirm_dialog_yes":"Yes",
+  "@confirm_dialog_yes":{
+    "description":""
+  },
+
+  "confirm_dialog_no":"No",
+  "@confirm_dialog_no":{
+    "description":""
+  },
+  "setting_language":"Language",
+  "@setting_language":{
+    "description":""
+  },
+
+  "setting_sign_out":"Sign out",
+  "@setting_sign_out":{
+    "description":""
+  },
+  "setting_language_title":"Choose Language",
+  "@setting_language_title":{
+    "description":""
+  }
+}

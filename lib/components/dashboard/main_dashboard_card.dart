@@ -1,6 +1,6 @@
+import 'package:cattle/models/LocaleModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 class MainDashboardCard extends StatelessWidget {
 
   final Color _color;
@@ -30,7 +30,7 @@ class MainDashboardCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text(_count,style: Theme.of(context).textTheme.headline4),
+                    Text(_count=="null"?"":_count,style: Theme.of(context).textTheme.headline4),
                     Text(_title.toString(),style: Theme.of(context).textTheme.headline4)
                   ],
                 ),
@@ -46,13 +46,16 @@ class MainDashboardCard extends StatelessWidget {
                     Flexible(
                       flex: 3,
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(10, 10, 30, 0),
+                        padding: EdgeInsets.fromLTRB(
+                          Language.isRtl(context) ?10:30, 10,Language.isRtl(context)?30: 10, 0
+                        ),
                         width: double.infinity,
                         height: double.infinity,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(100),
+                            topLeft: Language.isRtl(context)?Radius.zero : Radius.circular(100),
+                            topRight: Language.isRtl(context)? Radius.circular(100):Radius.zero,
                           )
                         ),
                         child: SvgPicture.asset(_image,fit:BoxFit.contain ,color: _color,),

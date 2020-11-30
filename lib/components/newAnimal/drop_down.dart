@@ -4,7 +4,7 @@ class DropDown extends StatelessWidget {
   final String value;
   final String hint;
   
-  final List<dynamic> items;
+  final List<DropdownMenuItem<String>> items;
   final Function onChanged;
 
   final focus;
@@ -41,12 +41,7 @@ class DropDown extends StatelessWidget {
               hint: Text(
                 hint,
               ),
-              items:items.map((item){
-                return DropdownMenuItem<String>(
-                  value:item,
-                  child: Text(item),
-                );
-              }).toList(),
+              items:items,
               onChanged: (item) {
                 onChanged(item);
               },

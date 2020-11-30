@@ -1,11 +1,14 @@
 
 
+import 'dart:convert';
+
 import 'package:cattle/components/dashboard/summary_card.dart';
 import 'package:cattle/components/detail/state_dialog.dart';
 import 'package:cattle/components/newAnimal/new-animal.dart';
 import 'package:cattle/models/LivestockState.dart';
 import 'package:cattle/models/livestock.dart';
 import 'package:cattle/repositories/LivstockRespository.dart';
+import 'package:cattle/utils/DateUtil.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:cattle/widgets/PinSnackBar.dart';
@@ -15,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:persian_date/persian_date.dart';
 import 'package:persian_datepicker/persian_datepicker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 
@@ -40,7 +44,8 @@ class _DetailState extends State<Detail> {
 
   LivestockRepository _livestockRepository;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  Map<String,String> _livestockState;
+  
 
   _DetailState(){
     _livestockRepository=LivestockRepository();
@@ -50,8 +55,18 @@ class _DetailState extends State<Detail> {
   void initState() {
 
     scrollController = new ScrollController()..addListener(_scrollListener);
+    _livestockState=Map.fromIterable(SettingsProvider().getSettings().livestockState,key: (v)=>v.value,value: (v)=>v.title); 
 
     loadLogs();
+
+// [Localizations.localeOf(context).languageCode]
+// element.value==AppLocalizations.of(context).detail_gender).title
+    Future.delayed(Duration.zero,(){
+    var element= jsonDecode( SettingsProvider().getSettings().livestockType.firstWhere((element)=>element.value==widget.livestock.gender).title)[Localizations.localeOf(context).languageCode];
+    print(element);
+    });
+
+
     super.initState();
   }
 
@@ -103,7 +118,7 @@ class _DetailState extends State<Detail> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ConfirmDialog(confirmDelete, "هشدار", "آیا از حذف این مورد مطمئن هستید",item: item);
+        return ConfirmDialog(confirmDelete, AppLocalizations.of(context).detail_alert, AppLocalizations.of(context).detail_are_you_sure_delete,item: item);
       },
     );
   }
@@ -148,7 +163,7 @@ class _DetailState extends State<Detail> {
     
     if(response.status==Status.COMPLETED){
       int index= _logs.indexWhere((element) => element.id==body["id"]);
-      LivestockState state=LivestockState(body["state"],PersianDate().gregorianToJalali(body["date"],"yyyy/mm/d"),body["description"],body["id"]);
+      LivestockState state=LivestockState(body["state"],body["date"],body["description"],body["id"]);
       setState(() {
         _logs[index]=state;
       });
@@ -168,8 +183,8 @@ class _DetailState extends State<Detail> {
         title:Row(
           crossAxisAlignment: CrossAxisAlignment.baseline,
           children: [
-            Icon(FontAwesome.tag,color: Colors.yellow,),
-            Text(" ${widget.livestock.tagNo}"),
+            // Icon(FontAwesome.tag,color: Colors.yellow,),
+            // Text(" ${widget.livestock.tagNo}"),
           ],
         ),
         actions: <Widget>[
@@ -187,17 +202,17 @@ class _DetailState extends State<Detail> {
           PopupMenuButton(
             offset: Offset(0,10),
             // elevation: 3.2,
-            initialValue: SettingsProvider().getSettings().livestockState[0],
+            initialValue: SettingsProvider().getSettings().livestockState[0].value,
             onCanceled: () {
               print('You have not chossed anything');
             },
             tooltip: 'This is tooltip',
             onSelected: _select,
             itemBuilder: (BuildContext context) {
-              return SettingsProvider().getSettings().livestockState.map((String choice) {
+              return SettingsProvider().getSettings().livestockState.map((SettingValueTitle choice) {
                 return PopupMenuItem(
-                  value: choice,
-                  child: Text(choice),
+                  value: choice.value,
+                  child: Text(jsonDecode(choice.title)[Localizations.localeOf(context).languageCode]),
                 );
               }).toList();
             },
@@ -219,7 +234,7 @@ class _DetailState extends State<Detail> {
               SizedBox(
                   height: 10,
                 ),
-                Text("مشخصات",style: Theme.of(context).textTheme.headline6),
+                // Text("مشخصات",style: Theme.of(context).textTheme.headline6),
                 SizedBox(
                   height: 10,
                 ),
@@ -229,16 +244,17 @@ class _DetailState extends State<Detail> {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   children: <Widget>[
-                    SummaryCard(0,"تولد",  "${widget.livestock.birthDate}",null),
-                    SummaryCard(1,"جنسیت", widget.livestock.gender.toString(),null),
-                    SummaryCard(2,'مادر', widget.livestock.mother,null),
-                    SummaryCard(3,'تلقیح کننده', widget.livestock.inseminator,null),
+                    SummaryCard(0,AppLocalizations.of(context).detail_birth,  "${ DateUtil.formatLocaleDate(widget.livestock.birthDate, context) }",null),
+                    SummaryCard(1, AppLocalizations.of(context).detail_gender  , jsonDecode( SettingsProvider().getSettings().livestockType.firstWhere((element)=>element.value==widget.livestock.gender).title)[Localizations.localeOf(context).languageCode],null),
+                    SummaryCard(2,AppLocalizations.of(context).detail_mother, widget.livestock.mother,null),
+                    SummaryCard(3,AppLocalizations.of(context).detail_inseminator, widget.livestock.inseminator,null),
+                    SummaryCard(4,AppLocalizations.of(context).detail_tag_no, widget.livestock.tagNo,null),
                   ],
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                _logs.length>0?Text("تاریخچه",style: Theme.of(context).textTheme.headline6):Container(),
+                _logs.length>0?Text(AppLocalizations.of(context).detail_history,style: Theme.of(context).textTheme.headline6):Container(),
                 SizedBox(
                   height: 10,
                 ),
@@ -287,7 +303,7 @@ class _DetailState extends State<Detail> {
 
                           )
                         ),
-                        Flexible(flex: 1, child:Container(
+                        Flexible(flex: 2, child:Container(
                           width: double.infinity,
                           margin: EdgeInsets.all(0),
 
@@ -295,26 +311,29 @@ class _DetailState extends State<Detail> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(item.state,style: Theme.of(context).textTheme.headline2,),
+                              Flexible(
+                                child:Text((jsonDecode(_livestockState[item.state])[Localizations.localeOf(context).languageCode]),style: Theme.of(context).textTheme.headline2,overflow: TextOverflow.ellipsis,),
+                              )
+                              
                             ],
                           )
                         )),
                         Flexible(flex: 3, child:Container(
                           width: double.infinity,
                           margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.only(top:20,bottom:20,left:10),
+                          // padding: EdgeInsets.only(top:20,bottom:20,left:10,right: 10),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Center(child:Text(item.date,style: Theme.of(context).textTheme.headline2,)),
+                              Center(child:Text( DateUtil.formatLocaleDate(item.date, context) ,style: Theme.of(context).textTheme.headline2,)),
                             ],
                           )
                         )),
                         Flexible(flex: 1, child:Container(
                           width: double.infinity,
                           margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.only(top:20,bottom:20,left:10),
+                          // padding: EdgeInsets.only(top:20,bottom:20,left:10,right: 10),
                           child: IconButton(
                             color: Colors.red,
                             icon: const Icon(Icons.delete),

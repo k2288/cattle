@@ -1,0 +1,256 @@
+{
+  "@@locale": "fa",
+  "login_description_1":"ما",
+  "@login_description_1":{
+    "description":""
+  },
+  "login_description_2":" رمز یکبار مصرف ",
+  "@login_description_2":{
+    "description":""
+  },
+  "login_description_3":"را برای همین تلفن ارسال می کنیم",
+  "@login_description_3":{
+    "description":""
+  },
+  "login_next":"بعدی",
+  "@login_next":{
+    "description":""
+  },
+  "login_phone_validation_error":"تلفن را درست وارد کنید",
+  "@login_phone_validation_error":{
+    "description":""
+  },
+  "login_phone_phone_input_placeholder":"...۰۹",
+  "@login_phone_phone_input_placeholder":{
+    "description":""
+  },
+
+  "otp_title":"کد تایید ۶ رقمی ارسال شده  را وارد کنید",
+  "@otp_title":{
+    "description":""
+  },
+  "otp_confirm":"تایید",
+  "@otp_confirm":{
+    "description":""
+  },
+
+  "dashboard_total_animal":"تعداد حیوانات",
+  "@dashboard_total_animal":{
+    "description":""
+  },
+
+  "dashboard_milking_cow":"گاوهای شیری",
+  "@dashboard_milking_cow":{
+    "description":""
+  },
+
+  "dashboard_dry_cow":"گاوهای خشک",
+  "@dashboard_dry_cow":{
+    "description":""
+  },
+
+  "dashboard_avg_milk":" میانگین شیر/گاو (Kg)",
+  "@dashboard_avg_milk":{
+    "description":""
+  },
+
+  "dashboard_insemination":"تلقیح",
+  "@dashboard_insemination":{
+    "description":""
+  },
+
+  "dashboard_milked":"شیرخوار",
+  "@dashboard_milked":{
+    "description":""
+  },
+
+  "dashboard_heifer":"تلیسه",
+  "@dashboard_heifer":{
+    "description":""
+  },
+
+  "dashboard_abortion":"سقط",
+  "@dashboard_abortion":{
+    "description":""
+  },
+
+  "dashboard_bull":"نر",
+  "@dashboard_bull":{
+    "description":""
+  },
+
+  "dashboard_cow":"ماده",
+  "@dashboard_cow":{
+    "description":""
+  },
+  "dashboard_summary":"خلاصه وضعیت",
+  "@dashboard_summary":{
+    "description":""
+  },
+
+  "filter_state":"وضعیت : ",
+  "@filter_state":{
+    "description":""
+  },
+  "filter_gender":"جنسیت : ",
+  "@filter_gender":{
+    "description":""
+  },
+  "filter_confirm":"اعمال فیلتر",
+  "@filter_confirm":{
+    "description":""
+  },
+  "filter_clear":"پاک کردن فیلتر",
+  "@filter_clear":{
+    "description":""
+  },
+
+  "new_animal_title":"دام جدید",
+  "@new_animal_title":{
+    "description":""
+  },
+
+  "edit_animal_title":"ویرایش دام",
+  "@edit_animal_title":{
+    "description":""
+  },
+
+  "new_animal_tag_no":"شماره تگ",
+  "@new_animal_tag_no":{
+    "description":""
+  },
+
+  "new_animal_mother":"مادر",
+  "@new_animal_mother":{
+    "description":""
+  },
+
+  "new_animal_inserminator":"تلقیح کننده",
+  "@new_animal_inserminator":{
+    "description":""
+  },
+
+  "new_animal_birth":"تاریخ تولد",
+  "@new_animal_birth":{
+    "description":""
+  },
+
+  "new_animal_gender":"جنسیت",
+  "@new_animal_gender":{
+    "description":""
+  },
+  "new_animal_save":"ذخیره دام",
+  "@new_animal_save":{
+    "description":""
+  },
+
+  "list_not_found":"موردی یافت نشد",
+  "@list_not_found":{
+    "description":""
+  },
+
+  "list_birth_state":"تولد",
+  "@list_birth_state":{
+    "description":""
+  },
+
+  "list_search_tag_no":"جستجوی شماره گوش ...",
+  "@list_search_tag_no":{
+    "description":""
+  },
+
+  "list_animals":"حیوانات",
+  "@list_animals":{
+    "description":""
+  },
+
+  "detail_alert":"هشدار",
+  "@detail_alert":{
+    "description":""
+  },
+
+  "detail_are_you_sure_delete":"آیا از حذف این مورد مطمئن هستید",
+  "@detail_are_you_sure_delete":{
+    "description":""
+  },
+
+  "detail_birth":"تولد",
+  "@detail_birth":{
+    "description":""
+  },
+
+  "detail_gender":"جنسیت",
+  "@detail_gender":{
+    "description":""
+  },
+
+  "detail_mother":"مادر",
+  "@detail_mother":{
+    "description":""
+  },
+
+  "detail_inseminator":"تلقیح کننده",
+  "@detail_inseminator":{
+    "description":""
+  },
+
+  "detail_tag_no":"شماره تگ",
+  "@detail_tag_no":{
+    "description":""
+  },
+
+  "detail_history":"تاریخچه",
+  "@detail_history":{
+    "description":""
+  },
+
+  "state_dialog_type":"نوع",
+  "@state_dialog_type":{
+    "description":""
+  },
+
+  "state_dialog_date":"تاریخ",
+  "@state_dialog_date":{
+    "description":""
+  },
+
+  "state_dialog_description":"توضیحات",
+  "@state_dialog_description":{
+    "description":""
+  },
+
+  "state_dialog_save":"تایید",
+  "@state_dialog_save":{
+    "description":""
+  },
+
+  "state_dialog_cancel":"لغو",
+  "@state_dialog_cancel":{
+    "description":""
+  },
+
+  "confirm_dialog_yes":"بلی",
+  "@confirm_dialog_yes":{
+    "description":""
+  },
+
+  "confirm_dialog_no":"خیر",
+  "@confirm_dialog_no":{
+    "description":""
+  },
+
+  "setting_language":"زبان",
+  "@setting_language":{
+    "description":""
+  },
+
+  "setting_sign_out":"خروج",
+  "@setting_sign_out":{
+    "description":""
+  },
+
+  "setting_language_title":"انتخاب زبان",
+  "@setting_language_title":{
+    "description":""
+  }
+}

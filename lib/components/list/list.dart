@@ -1,14 +1,21 @@
+import 'dart:convert';
+
 import 'package:cattle/components/detail/detail.dart';
 import 'package:cattle/components/list/filter.dart';
+import 'package:cattle/models/LocaleModel.dart';
 import 'package:cattle/models/livestock.dart';
 import 'package:cattle/repositories/LivstockRespository.dart';
+import 'package:cattle/utils/DateUtil.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:cattle/widgets/PinSnackBar.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/pin_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:intl/intl.dart';
+import 'package:persian_date/persian_date.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CattleList extends StatefulWidget {
 
@@ -31,7 +38,8 @@ class _CattleListState extends State<CattleList> {
   List<Livestock> _livestockList=new List<Livestock>();
   LivestockRepository _livestockRepository;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  SettingsData _settingData;
+  Map<String,String> _livestockType;
+  Map<String,String> _livestockState;
 
   ScrollController scrollController;
 
@@ -45,9 +53,13 @@ class _CattleListState extends State<CattleList> {
   void initState() {
     filterData=widget.filterData;
     loadLivestock();
-    _settingData= SettingsProvider().getSettings();
+    _livestockType= Map.fromIterable(SettingsProvider().getSettings().livestockType,key: (v)=>v.value,value: (v)=>v.title); 
+    _livestockState=Map.fromIterable(SettingsProvider().getSettings().livestockState,key: (v)=>v.value,value: (v)=>v.title); 
 
     scrollController= ScrollController()..addListener(_scrollListener);
+
+
+
     super.initState();
   }
 
@@ -157,7 +169,7 @@ class _CattleListState extends State<CattleList> {
                                 bottom: 5
                               ),
                               padding: EdgeInsets.all(10),
-                              child: item.gender!=null && _settingData.livestockType.contains(item.gender)  ? PinImage(url: "/assets/type/${item.gender}.png"):Container()
+                              child: item.gender!=null && _livestockType[item.gender]!=null  ? PinImage(url: "/assets/type/${item.gender}.png"):Container()
                             )
                           ),
                           Flexible(flex: 3, child:Container(
@@ -168,7 +180,7 @@ class _CattleListState extends State<CattleList> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(item.gender,style: Theme.of(context).textTheme.headline2,),
+                                Text((jsonDecode(_livestockType[item.gender])[Localizations.localeOf(context).languageCode]) ,style: Theme.of(context).textTheme.headline2,),
                                 Text(item.tagNo,style: Theme.of(context).textTheme.headline3,),
                                 
                               ],
@@ -177,11 +189,11 @@ class _CattleListState extends State<CattleList> {
                           Flexible(flex: 2, child: Container(
                               
                               padding: EdgeInsets.all(15),
-                              child: item.state!=null && _settingData.livestockState.contains(item.state)  ? PinImage(url: "/assets/states/${item.state}.png"):Container(),
+                              child: item.state!=null && _livestockState[item.state]!=null  ? PinImage(url: "/assets/states/${item.state}.png"):Container(),
                               
                             )
                           ),
-                          Flexible(flex: 2, child:Container(
+                          Flexible(flex: 3, child:Container(
                             width: double.infinity,
                             margin: EdgeInsets.all(0),
                             padding: EdgeInsets.only(top:20,bottom:20,left:5),
@@ -189,9 +201,10 @@ class _CattleListState extends State<CattleList> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Center(child:Text(item.state??"تولد",style: Theme.of(context).textTheme.headline2)),
-                                Center(child: Text(item.state!=null?item.lastStateDate:item.birthDate,style:TextStyle(fontSize: 12)))
-                                
+                                Center(child:Text(item.state!=null?(jsonDecode(_livestockState[item.state])[Localizations.localeOf(context).languageCode]):AppLocalizations.of(context).list_birth_state,style: Theme.of(context).textTheme.headline2)),
+                                Center(child: Text(
+                                  item.state!=null?DateUtil.formatLocaleDate(item.lastStateDate, context):DateUtil.formatLocaleDate(item.birthDate, context),
+                                ))
                                 // Icon(FontAwesomeIcons.sort,color: Colors.white,)
                               ],
                             )
@@ -204,7 +217,7 @@ class _CattleListState extends State<CattleList> {
                 }
               )
             ):(
-                _totalItems==0?Center(child:Text("موردی یافت نشد"))
+                _totalItems==0?Center(child:Text(AppLocalizations.of(context).list_not_found))
                 :Center( child:CircularProgressIndicator())
               )
              
@@ -237,7 +250,7 @@ class _CattleListState extends State<CattleList> {
       controller: _searchQueryController,
       autofocus: true,
       decoration: InputDecoration(
-        hintText: "جستجوی شماره گوش ...",
+        hintText: AppLocalizations.of(context).list_search_tag_no,
         border: InputBorder.none,
         hintStyle: TextStyle(color: Colors.white30),
       ),

@@ -6,6 +6,7 @@ import 'package:cattle/models/Dashboard.dart';
 import 'package:cattle/repositories/DashboardRespository.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -76,13 +77,13 @@ class _DashboardState extends State<Dashboard> {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 children: <Widget>[
-                  MainDashboardCard(Color(0xfffd6768),_dashboard.total.toString().padLeft(2,"0") ,"تعداد حیوانات","assets/images/total_cow.svg",()=>_onMainCardClick(FilterData([], []))),
-                  MainDashboardCard(Color(0xff109da4),_dashboard.calved.toString().padLeft(2,"0"),"گاوهای شیری","assets/images/milking_cow.svg",()=>_onMainCardClick(FilterData(["زایش"], []))),
-                  MainDashboardCard(Color(0xfff0981a),_dashboard.dry.toString().padLeft(2,"0"),"گاوهای خشک","assets/images/dry_cow.svg",()=>_onMainCardClick(FilterData(["خشک"],[]))),
-                  MainDashboardCard(Color(0xff48294b),"00.00"," میانگین شیر/گاو (Kg)","assets/images/milk.svg",null),
+                  MainDashboardCard(Color(0xfffd6768),_dashboard.total.toString().padLeft(2,"0") ,AppLocalizations.of(context).dashboard_total_animal,"assets/images/total_cow.svg",()=>_onMainCardClick(FilterData([], []))),
+                  MainDashboardCard(Color(0xff109da4),_dashboard.calved.toString().padLeft(2,"0"),AppLocalizations.of(context).dashboard_milking_cow,"assets/images/milking_cow.svg",()=>_onMainCardClick(FilterData(["CALVED"], []))),
+                  MainDashboardCard(Color(0xfff0981a),_dashboard.dry.toString().padLeft(2,"0"),AppLocalizations.of(context).dashboard_dry_cow,"assets/images/dry_cow.svg",()=>_onMainCardClick(FilterData(["DRY"],[]))),
+                  MainDashboardCard(Color(0xff48294b),"00.00",AppLocalizations.of(context).dashboard_avg_milk,"assets/images/milk.svg",null),
                 ],
               ),
-              Text("خلاصه وضعیت",style: Theme.of(context).textTheme.headline6),
+              Text(AppLocalizations.of(context).dashboard_summary,style: Theme.of(context).textTheme.headline6),
               GridView.count(
                 crossAxisCount: 3,
                 padding: _topBottomPadding,
@@ -92,12 +93,12 @@ class _DashboardState extends State<Dashboard> {
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 children: <Widget>[
-                  SummaryCard(0,"تلقیح", _dashboard.insemination.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["تلقیح"], []))),
-                  SummaryCard(1,"شیرخوار", _dashboard.milked.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["شیرخوار"], []))),
-                  SummaryCard(2,'تلیسه', _dashboard.heifer.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["تلیسه"], []))),
-                  SummaryCard(3,'سقط', _dashboard.abortion.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["سقط"], []))),
-                  SummaryCard(4,"نر", _dashboard.bull.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData([], ["نر"]))),
-                  SummaryCard(5,"ماده", _dashboard.cow.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData([], ["ماده"]))),
+                  SummaryCard(0,AppLocalizations.of(context).dashboard_insemination, _dashboard.insemination.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["INSEMINATION"], []))),
+                  SummaryCard(1,AppLocalizations.of(context).dashboard_milked, _dashboard.milked.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["MILKED"], []))),
+                  SummaryCard(2,AppLocalizations.of(context).dashboard_heifer, _dashboard.heifer.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["HEIFER"], []))),
+                  SummaryCard(3,AppLocalizations.of(context).dashboard_abortion, _dashboard.abortion.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData(["ABORTION"], []))),
+                  SummaryCard(4,AppLocalizations.of(context).dashboard_bull, _dashboard.bull.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData([], ["BULL"]))),
+                  SummaryCard(5,AppLocalizations.of(context).dashboard_cow, _dashboard.cow.toString().padLeft(2,"0"),()=>_onMainCardClick(FilterData([], ["COW"]))),
                 ],
               )
             ]),
@@ -111,7 +112,7 @@ class _DashboardState extends State<Dashboard> {
   _onMainCardClick(FilterData filterDate){
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CattleList(title: "حیوانات",filterData: filterDate,)),
+      MaterialPageRoute(builder: (context) => CattleList(title: AppLocalizations.of(context).list_animals,filterData: filterDate,)),
     );
   }
 }

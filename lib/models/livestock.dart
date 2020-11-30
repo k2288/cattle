@@ -18,8 +18,8 @@ class Livestock{
   Livestock.fromJSON(Map<String,dynamic> json)
     : tagNo=json["tagNo"],
       id=json["_id"],
-      birthDate=json["birthDate"]!=null?PersianDate().gregorianToJalali(json["birthDate"],"yyyy/mm/d"):"",
-      lastStateDate=json["lastStateDate"]!=null?PersianDate().gregorianToJalali(json["lastStateDate"],"yyyy/mm/d"):"",
+      birthDate=json["birthDate"]!=null?json["birthDate"]:"",
+      lastStateDate=json["lastStateDate"]!=null?json["lastStateDate"]:"",
       gender=json["gender"],
       mother=json["mother"],
       inseminator=json["inseminator"],

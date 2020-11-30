@@ -1,9 +1,13 @@
 import 'dart:convert';
 import 'package:cattle/components/login/otp_page.dart';
+import 'package:cattle/models/LocaleModel.dart';
 import 'package:cattle/repositories/AuthRepository.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -37,6 +41,29 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     children: <Widget>[
                       Container(
+                        padding: EdgeInsets.only(top:20,left: 20,right:20),
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: DropdownButton<String>(
+                            value: Localizations.localeOf(context).languageCode,
+                            underline: Container(
+                              height: 0,
+                            ),
+                            icon:Icon(MaterialIcons.language),
+                            items: languageList.map<DropdownMenuItem<String>>((Language lang) {
+                              return DropdownMenuItem<String>(
+                                value: lang.code,
+                                child: Text(lang.name),
+                              );
+                            }).toList(),
+                            onChanged: (String newValue) {
+                              Provider.of<LocaleModel>(context, listen: false).set(newValue);
+                            },
+
+                          )
+                        ),
+                      ),
+                      Container(
                         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                         child: Stack(
                           children: <Widget>[
@@ -46,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                                 constraints: const BoxConstraints(
                                   maxWidth: 500
                                 ),
-                                margin: const EdgeInsets.only(top: 20),
+                                // margin: const EdgeInsets.only(top: 20),
                                 decoration: const BoxDecoration(color: Color(0xFFE1E0F5), borderRadius: BorderRadius.all(Radius.circular(30))),
                               ),
                             ),
@@ -78,10 +105,10 @@ class _LoginPageState extends State<LoginPage> {
                           child: RichText(
                             textAlign: TextAlign.center,
                             text: TextSpan(children: <TextSpan>[
-                              TextSpan(text: 'ما', style: TextStyle(color: Theme.of(context).primaryColor,fontFamily: "Iran_Sans")),
+                              TextSpan(text: AppLocalizations.of(context).login_description_1, style: TextStyle(color: Theme.of(context).primaryColor,fontFamily: "Iran_Sans")),
                               TextSpan(
-                                  text: ' رمز یکبار مصرف ', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,fontFamily: "Iran_Sans")),
-                              TextSpan(text: 'را برای همین تلفن ارسال می کنیم', style: TextStyle(color: Theme.of(context).primaryColor,fontFamily: "Iran_Sans")),
+                                  text: AppLocalizations.of(context).login_description_2, style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,fontFamily: "Iran_Sans")),
+                              TextSpan(text: AppLocalizations.of(context).login_description_3, style: TextStyle(color: Theme.of(context).primaryColor,fontFamily: "Iran_Sans")),
                             ]),
                           )),
                       Container(
@@ -101,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                           clearButtonMode: OverlayVisibilityMode.editing,
                           keyboardType: TextInputType.phone,
                           maxLines: 1,
-                          placeholder: '...09',
+                          placeholder: AppLocalizations.of(context).login_phone_phone_input_placeholder,
                         ),
                       ),
                       Container(
@@ -113,6 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                           builder: (context){
                               return RaisedButton(
                               onPressed: () async {
+
                                 if (phoneController.text.isNotEmpty) {
                                   var response=await _authRepository.postUser(jsonEncode(<String, String>{"phone":phoneController.text}));
                                   if(Status.COMPLETED==response.status){
@@ -144,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                                   Scaffold
                                     .of(context)
                                     .showSnackBar(SnackBar(
-                                        content: Text('تلفن را درست وارد کنید',style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
+                                        content: Text(AppLocalizations.of(context).login_phone_validation_error,style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
                                         behavior: SnackBarBehavior.floating,
                                         backgroundColor: Colors.red,
                                       )
@@ -159,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Text(
-                                      'بعدی',
+                                      AppLocalizations.of(context).login_next,
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     Container(

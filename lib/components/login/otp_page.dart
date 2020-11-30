@@ -8,6 +8,7 @@ import 'package:cattle/utils/api/ApiProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
 import 'package:numeric_keyboard/numeric_keyboard.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OtpPage extends StatefulWidget {
 
@@ -97,7 +98,7 @@ class _OtpPageState extends State<OtpPage> {
                       children: <Widget>[
                         Container(
                             margin: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text('کد تایید ۶ رقمی ارسال شده  را وارد کنید', style: TextStyle(color: Colors.black, fontSize: 26, fontWeight: FontWeight.w500))
+                            child: Text(AppLocalizations.of(context).otp_title, style: TextStyle(color: Colors.black, fontSize: 26, fontWeight: FontWeight.w500))
                         ),
                         Container(
                           constraints: const BoxConstraints(
@@ -161,7 +162,7 @@ class _OtpPageState extends State<OtpPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text('تایید', style: TextStyle(color: Colors.white),),
+                            Text(AppLocalizations.of(context).otp_confirm, style: TextStyle(color: Colors.white),),
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(

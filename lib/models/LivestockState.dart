@@ -1,4 +1,3 @@
-import 'package:persian_date/persian_date.dart';
 
 class LivestockState{
   String id;
@@ -11,6 +10,6 @@ class LivestockState{
   LivestockState.fromJSON(Map<String,dynamic> json)
     : state=json["state"],
       id=json["_id"],
-      date=json["date"]!=null?PersianDate().gregorianToJalali(json["date"],"yyyy/mm/d"):"",
+      date=json["date"]!=null?json["date"]:"",
       description=json["description"];
 }

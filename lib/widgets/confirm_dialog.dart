@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ConfirmDialog extends StatelessWidget {
 
@@ -14,13 +15,13 @@ class ConfirmDialog extends StatelessWidget {
   Widget build(BuildContext context) {
 
     Widget cancelButton = FlatButton(
-      child: Text("خیر"),
+      child: Text(AppLocalizations.of(context).confirm_dialog_no,style: TextStyle(color: Colors.black),),
       onPressed:  () {
         Navigator.of(context).pop();
       },
     );
     Widget continueButton = FlatButton(
-      child: Text("بلی"),
+      child: Text(AppLocalizations.of(context).confirm_dialog_yes,style: TextStyle(color: Colors.black),),
       onPressed:  (){
         if(item!=null){
           print(1);

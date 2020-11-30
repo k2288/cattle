@@ -1,10 +1,12 @@
 import 'package:cattle/components/login/login_page.dart';
 import 'package:cattle/home.dart';
+import 'package:cattle/models/LocaleModel.dart';
 import 'package:cattle/repositories/SettingRespository.dart';
 import 'package:cattle/repositories/UserRepository.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key key}) : super(key: key);
@@ -46,6 +48,8 @@ class _SplashPageState extends State<SplashPage> {
       
       Response response=await _settingRepository.get();
       SettingsProvider().setSettings(response.data);
+
+      Provider.of<LocaleModel>(context,listen: false).initLocalFromStorage();
 
       if(response.status==Status.COMPLETED){
 

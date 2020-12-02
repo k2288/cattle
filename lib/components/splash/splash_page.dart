@@ -69,7 +69,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   doStuffCallback(){
-    // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LoginPage()), (Route<dynamic> route) => false);
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LoginPage()), (Route<dynamic> route) => false);
   }
 
   @override

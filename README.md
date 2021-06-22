@@ -1,4 +1,4 @@
-Cattle Management App written in Flutter.It uses Nestjs as backend (it will uploaded soon) and also a design implementation of [Best Cattle Management App](https://dribbble.com/shots/10497109-Best-Cattle-Management-App) and [Cow milk](https://dribbble.com/shots/13081526-Cow-milk) as app launcher.
+Cattle Management App written in Flutter.It uses Nestjs as backend([Link](https://github.com/k2288/cattle-back)) and also a design implementation of [Best Cattle Management App](https://dribbble.com/shots/10497109-Best-Cattle-Management-App) and [Cow milk](https://dribbble.com/shots/13081526-Cow-milk) as app launcher.
 
 
 ## Android Screenshots

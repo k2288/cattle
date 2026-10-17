@@ -6,7 +6,7 @@ import 'package:cattle/utils/api/ApiProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 
 class LivestockRepository{
-  ApiProvider _apiProvider= ApiProvider();
+  final ApiProvider _apiProvider= ApiProvider();
 
   Future<Response> postLivestock(body)async{
     try{
@@ -91,11 +91,11 @@ class LivestockRepository{
 
 class LiveStockResponse{
   List<Livestock> contents;
-  int totalElements;
-  int offset;
-  int pageSize;
+  int? totalElements;
+  int? offset;
+  int? pageSize;
 
-  LiveStockResponse({this.contents});
+  LiveStockResponse({this.contents = const []});
 
   LiveStockResponse.fromJSON(Map<String,dynamic> json)
     : contents=json["contents"]!=null?(json["contents"] as List).map((e) => Livestock.fromJSON(e)).toList():[],
@@ -106,11 +106,11 @@ class LiveStockResponse{
 
 class LiveStockStateResponse{
   List<LivestockState> contents;
-  int totalElements;
-  int offset;
-  int pageSize;
+  int? totalElements;
+  int? offset;
+  int? pageSize;
 
-  LiveStockStateResponse({this.contents});
+  LiveStockStateResponse({this.contents = const []});
 
   LiveStockStateResponse.fromJSON(Map<String,dynamic> json)
     : contents=json["contents"]!=null?(json["contents"] as List).map((e) => LivestockState.fromJSON(e)).toList():[],

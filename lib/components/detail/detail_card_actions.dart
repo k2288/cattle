@@ -5,15 +5,15 @@ class DetailCardAction extends StatelessWidget {
 
   final Color _color;
   final Color _imageColor;
-  final Function _onTab;
+  final VoidCallback? _onTab;
   final String _image;
   final String _title;
 
-  DetailCardAction(this._color,this._onTab,this._title,this._image,this._imageColor);
+  const DetailCardAction(this._color,this._onTab,this._title,this._image,this._imageColor, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 140,
       child:Card(
         clipBehavior: Clip.antiAlias,
@@ -31,11 +31,11 @@ class DetailCardAction extends StatelessWidget {
               children: <Widget>[
                 Flexible(
                   flex: 2,
-                  child: Container(
+                  child: SizedBox(
                     height: 60,
                     width: 60,
                     // color: Colors.black,
-                    child: SvgPicture.asset(_image ,color: _imageColor,fit: BoxFit.cover,),
+                    child: SvgPicture.asset(_image ,colorFilter: ColorFilter.mode(_imageColor, BlendMode.srcIn),fit: BoxFit.cover,),
                   ),
                 ),
                 Flexible(

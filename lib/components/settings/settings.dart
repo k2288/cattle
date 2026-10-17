@@ -5,9 +5,11 @@ import 'package:cattle/utils/api/ApiProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cattle/l10n/app_localizations.dart';
 
 class Settings extends StatefulWidget {
+  const Settings({super.key});
+
   @override
   _SettingsState createState() => _SettingsState();
 }
@@ -18,20 +20,20 @@ class _SettingsState extends State<Settings> {
     return SettingsList(
         sections: [
           SettingsSection(
-            title: AppLocalizations.of(context).setting_common_section,
+            title: Text(AppLocalizations.of(context)!.setting_common_section),
             tiles: [
               SettingsTile(
-                title: AppLocalizations.of(context).setting_language,
-                subtitle: languageList.where((Language element) =>element.code==Localizations.localeOf(context).languageCode).first.name,
+                title: Text(AppLocalizations.of(context)!.setting_language),
+                value: Text(languageList.where((Language element) =>element.code==Localizations.localeOf(context).languageCode).first.name),
                 leading: Icon(Icons.language),
-                onTap: () {
+                onPressed: (context) {
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>ChangeLanguagePage(languageList,(e)=>Provider.of<LocaleModel>(context, listen: false).set(e.code))));
                 },
               ),
               SettingsTile(
-                title:AppLocalizations.of(context).setting_sign_out,
+                title: Text(AppLocalizations.of(context)!.setting_sign_out),
                 leading: Icon(Icons.exit_to_app),
-                onTap: () {
+                onPressed: (context) {
                   ApiProvider().emptyToken();
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginPage()));
                 },

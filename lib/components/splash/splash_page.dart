@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({Key key}) : super(key: key);
+  const SplashPage({Key? key}) : super(key: key);
   @override
   _SplashPageState createState() => _SplashPageState();
 }
@@ -18,13 +18,8 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  UserRepository _userRepository;
-  SettingRepository _settingRepository;
-
-  _SplashPageState(){
-    _userRepository=new UserRepository();
-    _settingRepository=new SettingRepository();
-  }
+  final UserRepository _userRepository = UserRepository();
+  final SettingRepository _settingRepository = SettingRepository();
 
   @override
   void initState() {
@@ -45,31 +40,31 @@ class _SplashPageState extends State<SplashPage> {
     // });
   }
   checkToken()async{
-    var response=await _userRepository.getMe();
-    if(response!=null){
-      
-      Response response=await _settingRepository.get();
+    final Response meResponse = await _userRepository.getMe();
+    final Response response = await _settingRepository.get();
+    if (response.data != null) {
       SettingsProvider().setSettings(response.data);
+    }
+    if (!mounted) return;
 
-      Provider.of<LocaleModel>(context,listen: false).initLocalFromStorage();
+    Provider.of<LocaleModel>(context,listen: false).initLocalFromStorage();
 
-      if(response.status==Status.COMPLETED){
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
-      }else{
-        _scaffoldKey.currentState.showSnackBar(PinSnackBar(response.message).get());
-        // doStuffCallback();
-      }
-
+    if(meResponse.status==Status.COMPLETED){
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
     }else{
+      if ((meResponse.message ?? '').isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(PinSnackBar(meResponse.message ?? '').get());
+      }
       doStuffCallback();
     }
+
   }
 
   doStuffCallback(){
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LoginPage()), (Route<dynamic> route) => false);
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => LoginPage()), (Route<dynamic> route) => false);
   }
 
   @override

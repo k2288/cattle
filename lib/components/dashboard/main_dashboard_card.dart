@@ -7,9 +7,9 @@ class MainDashboardCard extends StatelessWidget {
   final String _count;
   final String _title;
   final String _image;
-  final Function _onTab;
+  final VoidCallback? _onTab;
 
-  MainDashboardCard(this._color,this._count,this._title,this._image,this._onTab);
+  const MainDashboardCard(this._color,this._count,this._title,this._image,this._onTab, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +30,8 @@ class MainDashboardCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text(_count=="null"?"":_count,style: Theme.of(context).textTheme.headline4),
-                    Text(_title.toString(),style: Theme.of(context).textTheme.headline4)
+                    Text(_count=="null"?"":_count,style: Theme.of(context).textTheme.headlineMedium),
+                    Text(_title.toString(),style: Theme.of(context).textTheme.headlineMedium)
                   ],
                 ),
               ),
@@ -40,8 +40,8 @@ class MainDashboardCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Flexible(
-                      child: Container(),
                       flex: 2,
+                      child: Container(),
                     ),
                     Flexible(
                       flex: 3,
@@ -58,7 +58,7 @@ class MainDashboardCard extends StatelessWidget {
                             topRight: Language.isRtl(context)? Radius.circular(100):Radius.zero,
                           )
                         ),
-                        child: SvgPicture.asset(_image,fit:BoxFit.contain ,color: _color,),
+                        child: SvgPicture.asset(_image,fit:BoxFit.contain ,colorFilter: ColorFilter.mode(_color, BlendMode.srcIn),),
                       ),
                     )
                   ],

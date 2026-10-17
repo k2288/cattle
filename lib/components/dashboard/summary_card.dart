@@ -6,8 +6,8 @@ class SummaryCard extends StatelessWidget {
   final int _index;
   final String _title;
   final dynamic _count;
-  final Function _onTab;
-  SummaryCard(this._index,this._title,this._count,this._onTab);
+  final VoidCallback? _onTab;
+  const SummaryCard(this._index,this._title,this._count,this._onTab, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class SummaryCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey[200],
+            color: Colors.grey.shade200,
             blurRadius: 1,
             spreadRadius: .5,
             offset: Offset(
@@ -40,6 +40,7 @@ class SummaryCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Flexible(
+              flex: 2,
               child:Container(
                 padding: EdgeInsets.only(
                   left: 11,
@@ -55,15 +56,14 @@ class SummaryCard extends StatelessWidget {
                   color: Color(0xff39445a),
                   borderRadius: BorderRadius.circular(90)
                 ),
-                child: Text(_count=="null"?"":_count,style: TextStyle(color: Colors.white),overflow: TextOverflow.ellipsis,),
+                child: Text(_count==null||_count=="null"?"":_count.toString(),style: TextStyle(color: Colors.white),overflow: TextOverflow.ellipsis,),
               ),
-              flex: 2,
             ),
             Flexible(
-              child: Container(
-                child: Center(child: Text(_title,style: Theme.of(context).textTheme.subtitle2,)) ,
-              ),
               flex: 1,
+              child: Container(
+                child: Center(child: Text(_title,style: Theme.of(context).textTheme.titleSmall,)) ,
+              ),
             )
           ],
         ),

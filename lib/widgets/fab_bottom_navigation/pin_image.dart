@@ -7,7 +7,7 @@ class PinImage extends StatelessWidget {
 
   final String url;
 
-  PinImage({this.url});
+  const PinImage({super.key, required this.url});
   @override
   Widget build(BuildContext context) {
     

@@ -1,13 +1,12 @@
-import 'package:barcode_scan/platform_wrapper.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:cattle/components/dashboard/dashboard.dart';
 import 'package:cattle/components/newAnimal/new-animal.dart';
 import 'package:cattle/components/settings/settings.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/fab_bottom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
 
   @override
@@ -16,7 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // int _selectedIndex = 0;
-  PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 0);
 
   void _onItemTapped(int index) {
     // _pageController.animateToPage(index,duration: Duration(milliseconds: 400),curve: Curves.easeInOut);
@@ -31,12 +30,13 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         actions: <Widget>[
             IconButton(icon: Icon(Icons.notifications_none,color: Colors.white,), onPressed: ()=>{}),
-            IconButton(icon: Icon(FontAwesomeIcons.qrcode,color: Colors.white,), onPressed: _scaneBarcode),
+            IconButton(icon: Icon(Icons.qr_code,color: Colors.white,), onPressed: _scaneBarcode),
           ],
         title: Text(" "),
       ),
       body: PageView(
         controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
           Center(
             child: Container(
@@ -64,24 +64,23 @@ class _HomePageState extends State<HomePage> {
             ),
           )
         ],
-        physics: NeverScrollableScrollPhysics(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => NewAnimal())); },
         tooltip: '',
-        child: Icon(Icons.add),
         elevation: 2.0,
+        child: Icon(Icons.add),
       ),
       bottomNavigationBar: FabBottomAppBar(
         selectedColor: Theme.of(context).primaryColor,
-        color: Colors.grey[500],
+        color: Colors.grey.shade500,
         onTabSelected: _onItemTapped,
         items: [
           FABBottomAppBarItem(iconData: Icons.dashboard, text: ''),
           FABBottomAppBarItem(iconData: Icons.message, text: ''),
-          FABBottomAppBarItem(iconData:null, text: ""),
-          FABBottomAppBarItem(iconData: FontAwesomeIcons.userNurse, text: ''),
+          FABBottomAppBarItem(text: ""),
+          FABBottomAppBarItem(iconData: Icons.medical_services, text: ''),
           FABBottomAppBarItem(iconData: Icons.settings, text: ''),
         ],
       ),
@@ -90,8 +89,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   _scaneBarcode() async {
-    var result = await BarcodeScanner.scan();
-    print(result.rawContent);
+    // Minimal scanner: opens a MobileScanner page and prints the first code.
+    final result = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(),
+          body: MobileScanner(
+            onDetect: (capture) {
+              final codes = capture.barcodes;
+              if (codes.isNotEmpty) {
+                Navigator.pop(context, codes.first.rawValue);
+              }
+            },
+          ),
+        ),
+      ),
+    );
+    debugPrint(result);
 
   }
 }

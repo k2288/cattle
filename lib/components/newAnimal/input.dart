@@ -4,12 +4,12 @@ class Input extends StatelessWidget {
 
   final TextEditingController _controller;
   final String _label;
-  final Function _onTab;
+  final VoidCallback? _onTab;
   final bool _enable;
-  final _focus;
-  final Function _changeFieldFocus;
+  final FocusNode? _focus;
+  final ValueChanged<String>? _changeFieldFocus;
   final bool _isLastItem;
-  Input(this._label,this._controller,this._onTab,this._enable,this._focus,this._changeFieldFocus,this._isLastItem);
+  const Input(this._label,this._controller,this._onTab,this._enable,this._focus,this._changeFieldFocus,this._isLastItem, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class Input extends StatelessWidget {
           labelText: _label,
         ),
         validator: (value) {
-          if (value.isEmpty) {
+          if (value == null || value.isEmpty) {
             return 'Please enter some text';
           }
           return null;

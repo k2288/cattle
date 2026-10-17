@@ -8,14 +8,15 @@ import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/ApiProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:numeric_keyboard/numeric_keyboard.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cattle/l10n/app_localizations.dart';
 
 class OtpPage extends StatefulWidget {
 
   final String phoneNumber;
 
-  const OtpPage(this.phoneNumber);
+  const OtpPage(this.phoneNumber, {super.key});
   @override
   _OtpPageState createState() => _OtpPageState();
 }
@@ -23,16 +24,12 @@ class OtpPage extends StatefulWidget {
 class _OtpPageState extends State<OtpPage> {
 
   String text = '';
-  AuthRepository _authRepository;
-  SettingRepository _settingRepository;
+  final AuthRepository _authRepository = AuthRepository();
+  final SettingRepository _settingRepository = SettingRepository();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
-  _OtpPageState(){
-    _authRepository=new AuthRepository();
-    _settingRepository=SettingRepository();
-  }
 
   void _onKeyboardTap(String value) {
     setState(() {
@@ -81,8 +78,7 @@ class _OtpPageState extends State<OtpPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
-        brightness: Brightness.light,
+        backgroundColor: Colors.white, systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       body: SafeArea(
         child: Column(
@@ -99,7 +95,7 @@ class _OtpPageState extends State<OtpPage> {
                       children: <Widget>[
                         Container(
                             margin: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text(AppLocalizations.of(context).otp_title, style: TextStyle(color: Colors.black, fontSize: 26, fontWeight: FontWeight.w500))
+                            child: Text(AppLocalizations.of(context)!.otp_title, style: TextStyle(color: Colors.black, fontSize: 26, fontWeight: FontWeight.w500))
                         ),
                         Container(
                           constraints: const BoxConstraints(
@@ -127,7 +123,7 @@ class _OtpPageState extends State<OtpPage> {
                     constraints: const BoxConstraints(
                         maxWidth: 500
                     ),
-                    child: RaisedButton(
+                    child: ElevatedButton(
                       onPressed: () async{
 
                         var response = await _authRepository.postCode(jsonEncode(<String, dynamic>{"code":text,"phone":widget.phoneNumber.toString()}));
@@ -144,9 +140,8 @@ class _OtpPageState extends State<OtpPage> {
                             MaterialPageRoute(builder: (context) => HomePage()),
                           );
                         }else{
-                          _scaffoldKey.currentState
-                          .showSnackBar(SnackBar(
-                              content: Text(response.message,style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(response.message ?? '',style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
                               behavior: SnackBarBehavior.floating,
                               backgroundColor: Colors.red,
                             )
@@ -155,16 +150,13 @@ class _OtpPageState extends State<OtpPage> {
 
                         // loginStore.validateOtpAndLogin(context, text);
                       },
-                      color: Theme.of(context).primaryColor,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(14))
-                      ),
+                      style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor, shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14)))),
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text(AppLocalizations.of(context).otp_confirm, style: TextStyle(color: Colors.white),),
+                            Text(AppLocalizations.of(context)!.otp_confirm, style: TextStyle(color: Colors.white),),
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(

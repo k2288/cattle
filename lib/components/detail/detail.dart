@@ -15,17 +15,14 @@ import 'package:cattle/widgets/PinSnackBar.dart';
 import 'package:cattle/widgets/confirm_dialog.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/pin_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:persian_date/persian_date.dart';
-import 'package:persian_datepicker/persian_datepicker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cattle/l10n/app_localizations.dart';
 
 
 
 class Detail extends StatefulWidget {
   final Livestock livestock;
 
-  Detail({this.livestock});
+  const Detail({super.key, required this.livestock});
 
   @override
   _DetailState createState() => _DetailState();
@@ -33,36 +30,31 @@ class Detail extends StatefulWidget {
 
 class _DetailState extends State<Detail> {
 
-  ScrollController scrollController;
-
-  PersianDatePickerWidget persianDatePicker;
+  late ScrollController scrollController;
 
 
-  List<LivestockState> _logs=List<LivestockState>();
+  final List<LivestockState> _logs=<LivestockState>[];
   int _pageSize=10,_offset=-10,_totalItems=0;
   bool _loading=true;
 
-  LivestockRepository _livestockRepository;
+  final LivestockRepository _livestockRepository = LivestockRepository();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  Map<String,String> _livestockState;
+  Map<String,String> _livestockState = {};
   
 
-  _DetailState(){
-    _livestockRepository=LivestockRepository();
-  }
   
   @override
   void initState() {
 
-    scrollController = new ScrollController()..addListener(_scrollListener);
-    _livestockState=Map.fromIterable(SettingsProvider().getSettings().livestockState,key: (v)=>v.value,value: (v)=>v.title); 
+    scrollController = ScrollController()..addListener(_scrollListener);
+    _livestockState={ for (var v in SettingsProvider().getSettings().livestockState ?? <SettingValueTitle>[]) v.value : v.title }; 
 
     loadLogs();
 
 // [Localizations.localeOf(context).languageCode]
-// element.value==AppLocalizations.of(context).detail_gender).title
+// element.value==AppLocalizations.of(context)!.detail_gender).title
     Future.delayed(Duration.zero,(){
-    var element= jsonDecode( SettingsProvider().getSettings().livestockType.firstWhere((element)=>element.value==widget.livestock.gender).title)[Localizations.localeOf(context).languageCode];
+    var element= jsonDecode( (SettingsProvider().getSettings().livestockType ?? <SettingValueTitle>[]).firstWhere((element)=>element.value==widget.livestock.gender).title)[Localizations.localeOf(context).languageCode];
     print(element);
     });
 
@@ -98,15 +90,15 @@ class _DetailState extends State<Detail> {
     if(response.status==Status.COMPLETED){
       setState(() {
         _logs.addAll(response.data.contents);  
-        _offset=response.data.offset;
-        _pageSize=response.data.pageSize;
-        _totalItems=response.data.totalElements;
+        _offset=response.data.offset ?? _offset;
+        _pageSize=response.data.pageSize ?? _pageSize;
+        _totalItems=response.data.totalElements ?? _totalItems;
         _loading=false;
 
       });
       
     }else{
-      _scaffoldKey.currentState.showSnackBar(PinSnackBar(response.message).get());
+      ScaffoldMessenger.of(context).showSnackBar(PinSnackBar(response.message ?? '').get());
     }
   }
   
@@ -118,7 +110,7 @@ class _DetailState extends State<Detail> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ConfirmDialog(confirmDelete, AppLocalizations.of(context).detail_alert, AppLocalizations.of(context).detail_are_you_sure_delete,item: item);
+        return ConfirmDialog(confirmDelete, AppLocalizations.of(context)!.detail_alert, AppLocalizations.of(context)!.detail_are_you_sure_delete,item: item);
       },
     );
   }
@@ -130,16 +122,15 @@ class _DetailState extends State<Detail> {
     Navigator.of(context).pop(widget.livestock);
     }else{
       Navigator.of(context).pop();
-    _scaffoldKey.currentState.showSnackBar(PinSnackBar(response.message).get());
+    ScaffoldMessenger.of(context).showSnackBar(PinSnackBar(response.message ?? '').get());
 
     }
   }
 
   void _select(String value){
-    LivestockState livestockState=LivestockState(value,null,"");
+    LivestockState livestockState=LivestockState(value,"","");
     showDialog(
-      context: context,
-      child: StateDialog(livestockState,saveStateHandler)
+      builder: (context) => StateDialog(livestockState,saveStateHandler), context: context
     );
   }
 
@@ -154,7 +145,7 @@ class _DetailState extends State<Detail> {
       Navigator.of(context).pop(); 
     }else{
       Navigator.of(context).pop(); 
-      _scaffoldKey.currentState.showSnackBar(PinSnackBar(response.message).get());
+      ScaffoldMessenger.of(context).showSnackBar(PinSnackBar(response.message ?? '').get());
     }
   }
 
@@ -170,7 +161,7 @@ class _DetailState extends State<Detail> {
       Navigator.of(context).pop(); 
     }else{
       Navigator.of(context).pop(); 
-      _scaffoldKey.currentState.showSnackBar(PinSnackBar(response.message).get());
+      ScaffoldMessenger.of(context).showSnackBar(PinSnackBar(response.message ?? '').get());
     }
 
   }
@@ -199,18 +190,18 @@ class _DetailState extends State<Detail> {
             }
           ),
           // SvgPicture.asset("assets/images/dry_cow.svg",fit:BoxFit.contain ,color: Colors.white,),
-          PopupMenuButton(
+          PopupMenuButton<String>(
             offset: Offset(0,10),
             // elevation: 3.2,
-            initialValue: SettingsProvider().getSettings().livestockState[0].value,
+            initialValue: (SettingsProvider().getSettings().livestockState ?? <SettingValueTitle>[]).isNotEmpty ? SettingsProvider().getSettings().livestockState![0].value : null,
             onCanceled: () {
               print('You have not chossed anything');
             },
             tooltip: 'This is tooltip',
             onSelected: _select,
             itemBuilder: (BuildContext context) {
-              return SettingsProvider().getSettings().livestockState.map((SettingValueTitle choice) {
-                return PopupMenuItem(
+              return (SettingsProvider().getSettings().livestockState ?? <SettingValueTitle>[]).map((SettingValueTitle choice) {
+                return PopupMenuItem<String>(
                   value: choice.value,
                   child: Text(jsonDecode(choice.title)[Localizations.localeOf(context).languageCode]),
                 );
@@ -244,17 +235,17 @@ class _DetailState extends State<Detail> {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   children: <Widget>[
-                    SummaryCard(0,AppLocalizations.of(context).detail_birth,  "${ DateUtil.formatLocaleDate(widget.livestock.birthDate, context) }",null),
-                    SummaryCard(1, AppLocalizations.of(context).detail_gender  , jsonDecode( SettingsProvider().getSettings().livestockType.firstWhere((element)=>element.value==widget.livestock.gender).title)[Localizations.localeOf(context).languageCode],null),
-                    SummaryCard(2,AppLocalizations.of(context).detail_mother, widget.livestock.mother,null),
-                    SummaryCard(3,AppLocalizations.of(context).detail_inseminator, widget.livestock.inseminator,null),
-                    SummaryCard(4,AppLocalizations.of(context).detail_tag_no, widget.livestock.tagNo,null),
+                    SummaryCard(0,AppLocalizations.of(context)!.detail_birth,  "${ DateUtil.formatLocaleDate(widget.livestock.birthDate, context) }",null),
+                    SummaryCard(1, AppLocalizations.of(context)!.detail_gender  , jsonDecode( (SettingsProvider().getSettings().livestockType ?? <SettingValueTitle>[]).firstWhere((element)=>element.value==widget.livestock.gender).title)[Localizations.localeOf(context).languageCode],null),
+                    SummaryCard(2,AppLocalizations.of(context)!.detail_mother, widget.livestock.mother ?? '',null),
+                    SummaryCard(3,AppLocalizations.of(context)!.detail_inseminator, widget.livestock.inseminator ?? '',null),
+                    SummaryCard(4,AppLocalizations.of(context)!.detail_tag_no, widget.livestock.tagNo ?? '',null),
                   ],
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                _logs.length>0?Text(AppLocalizations.of(context).detail_history,style: Theme.of(context).textTheme.headline6):Container(),
+                _logs.isNotEmpty?Text(AppLocalizations.of(context)!.detail_history,style: Theme.of(context).textTheme.titleLarge):Container(),
                 SizedBox(
                   height: 10,
                 ),
@@ -271,7 +262,7 @@ class _DetailState extends State<Detail> {
                       // borderRadius: BorderRadius.circular(5),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey[200],
+                          color: Colors.grey.shade200,
                           blurRadius: .5,
                           spreadRadius: .2,
                           offset: Offset(
@@ -289,8 +280,7 @@ class _DetailState extends State<Detail> {
                     child: InkWell(
                       onTap: (){    
                         showDialog(
-                          context: context,
-                          child: StateDialog(item,updateStateHandler)
+                          builder: (context) => StateDialog(item,updateStateHandler), context: context
                           
                         );
                       },
@@ -312,7 +302,7 @@ class _DetailState extends State<Detail> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Flexible(
-                                child:Text((jsonDecode(_livestockState[item.state])[Localizations.localeOf(context).languageCode]),style: Theme.of(context).textTheme.headline2,overflow: TextOverflow.ellipsis,),
+                                child:Text((jsonDecode(_livestockState[item.state] ?? "{}")[Localizations.localeOf(context).languageCode]),style: Theme.of(context).textTheme.displayMedium,overflow: TextOverflow.ellipsis,),
                               )
                               
                             ],
@@ -326,7 +316,7 @@ class _DetailState extends State<Detail> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Center(child:Text( DateUtil.formatLocaleDate(item.date, context) ,style: Theme.of(context).textTheme.headline2,)),
+                              Center(child:Text( DateUtil.formatLocaleDate(item.date, context) ,style: Theme.of(context).textTheme.displayMedium,)),
                             ],
                           )
                         )),
@@ -360,7 +350,7 @@ class _DetailState extends State<Detail> {
       });
       Navigator.of(context).pop();
     }else{
-      _scaffoldKey.currentState.showSnackBar(PinSnackBar(response.message).get());
+      ScaffoldMessenger.of(context).showSnackBar(PinSnackBar(response.message ?? '').get());
       Navigator.of(context).pop();
     }
   }

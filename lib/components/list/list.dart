@@ -11,15 +11,13 @@ import 'package:cattle/utils/api/Response.dart';
 import 'package:cattle/widgets/PinSnackBar.dart';
 import 'package:cattle/widgets/fab_bottom_navigation/pin_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
-import 'package:persian_date/persian_date.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cattle/l10n/app_localizations.dart';
 
 class CattleList extends StatefulWidget {
 
-  CattleList({ @required this.title,this.filterData});
+  const CattleList({super.key,  required this.title, required this.filterData});
 
   final String title;
   final FilterData filterData;
@@ -29,32 +27,29 @@ class CattleList extends StatefulWidget {
 }
 
 class _CattleListState extends State<CattleList> {
-  TextEditingController _searchQueryController = TextEditingController();
+  final TextEditingController _searchQueryController = TextEditingController();
   bool _isSearching = false;
   String searchQuery = "";
   int _pageSize=10,_offset=-10,_totalItems=-1;
   bool _loading=true;
 
-  List<Livestock> _livestockList=new List<Livestock>();
-  LivestockRepository _livestockRepository;
+  final List<Livestock> _livestockList=<Livestock>[];
+  final LivestockRepository _livestockRepository=LivestockRepository();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  Map<String,String> _livestockType;
-  Map<String,String> _livestockState;
+  Map<String,String> _livestockType={};
+  Map<String,String> _livestockState={};
 
-  ScrollController scrollController;
+  late ScrollController scrollController;
 
   FilterData filterData=FilterData([],[]);
 
-  _CattleListState(){
-    _livestockRepository=LivestockRepository();
-  }
 
   @override
   void initState() {
     filterData=widget.filterData;
     loadLivestock();
-    _livestockType= Map.fromIterable(SettingsProvider().getSettings().livestockType,key: (v)=>v.value,value: (v)=>v.title); 
-    _livestockState=Map.fromIterable(SettingsProvider().getSettings().livestockState,key: (v)=>v.value,value: (v)=>v.title); 
+    _livestockType= { for (var v in SettingsProvider().getSettings().livestockType ?? <SettingValueTitle>[]) v.value : v.title }; 
+    _livestockState={ for (var v in SettingsProvider().getSettings().livestockState ?? <SettingValueTitle>[]) v.value : v.title }; 
 
     scrollController= ScrollController()..addListener(_scrollListener);
 
@@ -80,9 +75,9 @@ class _CattleListState extends State<CattleList> {
       });
     }
 
-    var params={
-      "state":filterData.states.length>0?filterData.states:null,
-      "type":filterData.type.length>0? filterData.type:null,
+    final Map<String, dynamic> params={
+      "state":filterData.states.isNotEmpty?filterData.states:null,
+      "type":filterData.type.isNotEmpty? filterData.type:null,
       "offset":(_offset+_pageSize).toString(),
       "pageSize":_pageSize.toString(),
       "searchTerm":searchQuery!=""?searchQuery:null
@@ -90,17 +85,18 @@ class _CattleListState extends State<CattleList> {
     params.removeWhere((key, value) => value==null) ;
     var response =await _livestockRepository.getLivestockList(params);
     if(response.status==Status.COMPLETED){
-      print(response.data.contents);
+      final LiveStockResponse data = response.data;
+      if(!mounted) return;
       setState(() {
-        _livestockList.addAll(response.data.contents) ;
-        _offset=response.data.offset;
-        _pageSize=response.data.pageSize;
-        _totalItems=response.data.totalElements;
+        _livestockList.addAll(data.contents) ;
+        _offset=data.offset ?? _offset;
+        _pageSize=data.pageSize ?? _pageSize;
+        _totalItems=data.totalElements ?? _totalItems;
         _loading=false;
       });
 
     }else{
-      _scaffoldKey.currentState.showSnackBar(PinSnackBar(response.message).get());
+      ScaffoldMessenger.of(context).showSnackBar(PinSnackBar(response.message ?? '').get());
     }
 
   }
@@ -140,7 +136,7 @@ class _CattleListState extends State<CattleList> {
                       // borderRadius: BorderRadius.circular(5),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey[200],
+                          color: Colors.grey.shade200,
                           blurRadius: .5,
                           spreadRadius: .2,
                           offset: Offset(
@@ -169,7 +165,7 @@ class _CattleListState extends State<CattleList> {
                                 bottom: 5
                               ),
                               padding: EdgeInsets.all(10),
-                              child: item.gender!=null && _livestockType[item.gender]!=null  ? PinImage(url: "/assets/type/${item.gender}.png"):Container()
+                              child: _livestockType[item.gender]!=null  ? PinImage(url: "/assets/type/${item.gender}.png"):Container()
                             )
                           ),
                           Flexible(flex: 3, child:Container(
@@ -180,8 +176,8 @@ class _CattleListState extends State<CattleList> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text((jsonDecode(_livestockType[item.gender])[Localizations.localeOf(context).languageCode]) ,style: Theme.of(context).textTheme.headline2,),
-                                Text(item.tagNo,style: Theme.of(context).textTheme.headline3,),
+                                Text((jsonDecode(_livestockType[item.gender] ?? "{}")[Localizations.localeOf(context).languageCode]) ,style: Theme.of(context).textTheme.displayMedium,),
+                                Text(item.tagNo ?? "",style: Theme.of(context).textTheme.displaySmall,),
                                 
                               ],
                             )
@@ -189,7 +185,7 @@ class _CattleListState extends State<CattleList> {
                           Flexible(flex: 2, child: Container(
                               
                               padding: EdgeInsets.all(15),
-                              child: item.state!=null && _livestockState[item.state]!=null  ? PinImage(url: "/assets/states/${item.state}.png"):Container(),
+                              child: _livestockState[item.state]!=null  ? PinImage(url: "/assets/states/${item.state}.png"):Container(),
                               
                             )
                           ),
@@ -201,9 +197,9 @@ class _CattleListState extends State<CattleList> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Center(child:Text(item.state!=null?(jsonDecode(_livestockState[item.state])[Localizations.localeOf(context).languageCode]):AppLocalizations.of(context).list_birth_state,style: Theme.of(context).textTheme.headline2)),
+                                Center(child:Text((jsonDecode(_livestockState[item.state] ?? "{}")[Localizations.localeOf(context).languageCode]),style: Theme.of(context).textTheme.displayMedium)),
                                 Center(child: Text(
-                                  item.state!=null?DateUtil.formatLocaleDate(item.lastStateDate, context):DateUtil.formatLocaleDate(item.birthDate, context),
+                                  DateUtil.formatLocaleDate(item.lastStateDate, context),
                                 ))
                                 // Icon(FontAwesomeIcons.sort,color: Colors.white,)
                               ],
@@ -217,7 +213,7 @@ class _CattleListState extends State<CattleList> {
                 }
               )
             ):(
-                _totalItems==0?Center(child:Text(AppLocalizations.of(context).list_not_found))
+                _totalItems==0?Center(child:Text(AppLocalizations.of(context)!.list_not_found))
                 :Center( child:CircularProgressIndicator())
               )
              
@@ -250,7 +246,7 @@ class _CattleListState extends State<CattleList> {
       controller: _searchQueryController,
       autofocus: true,
       decoration: InputDecoration(
-        hintText: AppLocalizations.of(context).list_search_tag_no,
+        hintText: AppLocalizations.of(context)!.list_search_tag_no,
         border: InputBorder.none,
         hintStyle: TextStyle(color: Colors.white30),
       ),
@@ -264,8 +260,7 @@ class _CattleListState extends State<CattleList> {
         IconButton(
           icon: const Icon(Icons.clear),
           onPressed: () {
-            if (_searchQueryController == null ||
-                _searchQueryController.text.isEmpty) {
+            if (_searchQueryController.text.isEmpty) {
               Navigator.pop(context);
               return;
             }
@@ -281,14 +276,14 @@ class _CattleListState extends State<CattleList> {
         onPressed: _startSearch,
       ),
       IconButton(
-        icon: const Icon(FontAwesome.sliders),
+        icon: const Icon(Icons.tune),
         onPressed: ()=>showFilterHandler(),
       ),
     ];
   }
 
   showFilterHandler()async{
-    FilterData response=await showModalBottomSheet(context: context, builder: (context){
+    final FilterData? response=await showModalBottomSheet<FilterData>(context: context, builder: (context){
         return Filter(filterData);
       },
       shape: RoundedRectangleBorder(
@@ -296,17 +291,16 @@ class _CattleListState extends State<CattleList> {
       ),
         backgroundColor: Colors.white,
     );
-    if(response!=null){
-      setState(() {
-        filterData=response;
-      });
-      loadLivestock(true);
-    }
+    if(response==null) return;
+    setState(() {
+      filterData=response;
+    });
+    loadLivestock(true);
   }
 
   void _startSearch() {
     ModalRoute.of(context)
-        .addLocalHistoryEntry(LocalHistoryEntry(onRemove: _stopSearching));
+        ?.addLocalHistoryEntry(LocalHistoryEntry(onRemove: _stopSearching));
 
     setState(() {
       _isSearching = true;

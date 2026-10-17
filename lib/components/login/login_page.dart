@@ -5,25 +5,20 @@ import 'package:cattle/repositories/AuthRepository.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:cattle/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key key}) : super(key: key);
+  const LoginPage({Key? key}) : super(key: key);
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   TextEditingController phoneController = TextEditingController();
-  AuthRepository _authRepository;
-
-  _LoginPageState(){
-    _authRepository=new AuthRepository();
-  }
+  final AuthRepository _authRepository = AuthRepository();
 
 
   @override
@@ -32,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height-30,
             child: Column(
               children: <Widget>[
@@ -49,14 +44,15 @@ class _LoginPageState extends State<LoginPage> {
                             underline: Container(
                               height: 0,
                             ),
-                            icon:Icon(MaterialIcons.language),
+                            icon:Icon(Icons.language),
                             items: languageList.map<DropdownMenuItem<String>>((Language lang) {
                               return DropdownMenuItem<String>(
                                 value: lang.code,
                                 child: Text(lang.name),
                               );
                             }).toList(),
-                            onChanged: (String newValue) {
+                            onChanged: (String? newValue) {
+                              if (newValue == null) return;
                               Provider.of<LocaleModel>(context, listen: false).set(newValue);
                             },
 
@@ -105,10 +101,10 @@ class _LoginPageState extends State<LoginPage> {
                           child: RichText(
                             textAlign: TextAlign.center,
                             text: TextSpan(children: <TextSpan>[
-                              TextSpan(text: AppLocalizations.of(context).login_description_1, style: TextStyle(color: Theme.of(context).primaryColor,fontFamily: "Iran_Sans")),
+                              TextSpan(text: AppLocalizations.of(context)!.login_description_1, style: TextStyle(color: Theme.of(context).primaryColor,fontFamily: "Iran_Sans")),
                               TextSpan(
-                                  text: AppLocalizations.of(context).login_description_2, style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,fontFamily: "Iran_Sans")),
-                              TextSpan(text: AppLocalizations.of(context).login_description_3, style: TextStyle(color: Theme.of(context).primaryColor,fontFamily: "Iran_Sans")),
+                                  text: AppLocalizations.of(context)!.login_description_2, style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,fontFamily: "Iran_Sans")),
+                              TextSpan(text: AppLocalizations.of(context)!.login_description_3, style: TextStyle(color: Theme.of(context).primaryColor,fontFamily: "Iran_Sans")),
                             ]),
                           )),
                       Container(
@@ -128,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                           clearButtonMode: OverlayVisibilityMode.editing,
                           keyboardType: TextInputType.phone,
                           maxLines: 1,
-                          placeholder: AppLocalizations.of(context).login_phone_phone_input_placeholder,
+                          placeholder: AppLocalizations.of(context)!.login_phone_phone_input_placeholder,
                         ),
                       ),
                       Container(
@@ -138,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: Builder(
                           builder: (context){
-                              return RaisedButton(
+                              return ElevatedButton(
                               onPressed: () async {
 
                                 if (phoneController.text.isNotEmpty) {
@@ -156,10 +152,8 @@ class _LoginPageState extends State<LoginPage> {
                                       MaterialPageRoute(builder: (context) => OtpPage(phoneController.text,)),
                                     );
                                   }else{
-                                    Scaffold
-                                    .of(context)
-                                    .showSnackBar(SnackBar(
-                                        content: Text(response.message,style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        content: Text(response.message ?? '',style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
                                         behavior: SnackBarBehavior.floating,
                                         backgroundColor: Colors.red,
                                       )
@@ -169,25 +163,22 @@ class _LoginPageState extends State<LoginPage> {
 
                                   // loginStore.getCodeWithPhoneNumber(context, phoneController.text.toString());
                                 } else {
-                                  Scaffold
-                                    .of(context)
-                                    .showSnackBar(SnackBar(
-                                        content: Text(AppLocalizations.of(context).login_phone_validation_error,style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        content: Text(AppLocalizations.of(context)!.login_phone_validation_error,style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
                                         behavior: SnackBarBehavior.floating,
                                         backgroundColor: Colors.red,
                                       )
                                     );
                                 }
                               },
-                              color: Theme.of(context).primaryColor,
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
+                              style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor, shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14)))),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Text(
-                                      AppLocalizations.of(context).login_next,
+                                      AppLocalizations.of(context)!.login_next,
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     Container(

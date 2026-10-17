@@ -19,12 +19,8 @@ class LocaleModel extends ChangeNotifier{
 
   initLocalFromStorage()async{
     FlutterSecureStorage storage = FlutterSecureStorage();
-    String locale=await storage.read(key: "locale");
-    if(locale==null){
-      set("en");
-    }else{
-      set(locale);
-    }
+    String? locale=await storage.read(key: "locale");
+    set(locale ?? "en");
   }
 }
 

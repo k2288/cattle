@@ -10,17 +10,14 @@ import 'package:cattle/utils/DateUtil.dart';
 import 'package:cattle/utils/SettingsProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:persian_datepicker/persian_datepicker.dart';
-import 'package:persian_datepicker/persian_datetime.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cattle/l10n/app_localizations.dart';
 
 
 
 class NewAnimal extends StatefulWidget {
 
-  final Livestock livestock;
-  NewAnimal({this.livestock});
+  final Livestock? livestock;
+  const NewAnimal({super.key, this.livestock});
 
   @override
   _NewAnimalState createState() => _NewAnimalState();
@@ -28,7 +25,7 @@ class NewAnimal extends StatefulWidget {
 
 class _NewAnimalState extends State<NewAnimal> {
 
-  LivestockRepository _livestockRepository;
+  final LivestockRepository _livestockRepository = LivestockRepository();
 
   final tagController = TextEditingController();
   final birthController = TextEditingController();
@@ -36,7 +33,7 @@ class _NewAnimalState extends State<NewAnimal> {
   final stateController = TextEditingController();
   final motherController = TextEditingController();
   final inserminatorController = TextEditingController();
-  String _genderValue;
+  String? _genderValue;
   // String _stateValue;
 
   final FocusNode _tagFocus = FocusNode();  
@@ -48,27 +45,20 @@ class _NewAnimalState extends State<NewAnimal> {
 
   // final FocusScopeNode _node = FocusScopeNode();
 
-  PersianDatePickerWidget persianDatePicker;
 
-
-  FocusNode currentFocus;
+  FocusNode? currentFocus;
   bool isInitialized=false;
   
   
 
   @override
   void initState() {
-    persianDatePicker = PersianDatePicker(
-      controller: birthController,
-    ).init();
-
-    if(widget.livestock!=null){
-      tagController.text=widget.livestock.tagNo;
-      genderController.text=widget.livestock.gender;
-      _genderValue=widget.livestock.gender;
-      motherController.text=widget.livestock.mother;
-      inserminatorController.text=widget.livestock.inseminator;
-    }
+    final l = widget.livestock;
+    tagController.text=l?.tagNo ?? '';
+    genderController.text=l?.gender ?? '';
+    _genderValue=l?.gender;
+    motherController.text=l?.mother ?? '';
+    inserminatorController.text=l?.inseminator ?? '';
 
     // states=SettingsProvider().getSettings().livestockState;
     super.initState();
@@ -76,20 +66,10 @@ class _NewAnimalState extends State<NewAnimal> {
 
 
     Future.delayed(Duration.zero,(){
-      if(widget.livestock!=null){
-        birthController.text= DateUtil.formatLocaleDate(widget.livestock.birthDate, context) ;
-      }
+      birthController.text= DateUtil.formatLocaleDate(widget.livestock?.birthDate, context) ;
     });
 
 
-  }
-
-  _NewAnimalState(){
-    _livestockRepository=LivestockRepository();
-    // setState(() {
-    //   currentFocus=_tagFocus;
-    // });
-    // FocusScope.of(context).requestFocus(currentFocus);
   }
 
   @override
@@ -108,16 +88,14 @@ class _NewAnimalState extends State<NewAnimal> {
             SliverAppBar(
               leading: BackButton(),
               centerTitle: true,
-              title:Text(widget.livestock!=null?
-                AppLocalizations.of(context).edit_animal_title
-                :AppLocalizations.of(context).new_animal_title
+              title:Text(AppLocalizations.of(context)!.edit_animal_title
               )
             ),
             SliverPadding(
               padding: EdgeInsets.all(20),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  Input(AppLocalizations.of(context).new_animal_tag_no,tagController,()=>{},true,_tagFocus,(str)=>_changeFieldFocus(_motherFocus),false),
+                  Input(AppLocalizations.of(context)!.new_animal_tag_no,tagController,(){},true,_tagFocus,(str)=>_changeFieldFocus(_motherFocus),false),
                   
 
                   SizedBox(height: 20), 
@@ -135,38 +113,21 @@ class _NewAnimalState extends State<NewAnimal> {
                   //   focus: _stateFocus,
                   // ),
                   SizedBox(height: 20), 
-                  Input(AppLocalizations.of(context).new_animal_mother,motherController,()=>{},true,_motherFocus,(str)=>_changeFieldFocus(_inseminatorFocus),false),
+                  Input(AppLocalizations.of(context)!.new_animal_mother,motherController,(){},true,_motherFocus,(str)=>_changeFieldFocus(_inseminatorFocus),false),
                   SizedBox(height: 20),
-                  Input(AppLocalizations.of(context).new_animal_inserminator,inserminatorController,()=>{},true,_inseminatorFocus,(str)=>{},true),
+                  Input(AppLocalizations.of(context)!.new_animal_inserminator,inserminatorController,(){},true,_inseminatorFocus,(str){},true),
                   SizedBox(height: 20),
-                  Input(AppLocalizations.of(context).new_animal_birth,birthController,() async {
-                    if(Language.isRtl(context)){
-                      FocusScope.of(context).requestFocus(new FocusNode()); // to prevent opening default keyboard
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return persianDatePicker;
-                      });
-                    }else{
-                    
-                      final DateTime picked = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.parse(birthController.text),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2025),
-                      );
-                      if(picked != null)
-                        birthController.text= DateFormat("yyyy-MM-dd").format(picked);
-                    }
-                    
-                  },false,_birthFocus,(str)=>{},false),
+                  Input(AppLocalizations.of(context)!.new_animal_birth,birthController,() async {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    await DateUtil.pickDate(context, birthController);
+                  },false,_birthFocus,(str){},false),
                   SizedBox(height: 20,),
                   DropDown(
-                    hint: AppLocalizations.of(context).new_animal_gender,
-                    items: SettingsProvider().getSettings().livestockType.map((item){
+                    hint: AppLocalizations.of(context)!.new_animal_gender,
+                    items: (SettingsProvider().getSettings().livestockType ?? <SettingValueTitle>[]).map((item){
                       return DropdownMenuItem<String>(
-                        child: Text(jsonDecode(item.title)[Localizations.localeOf(context).languageCode]),
-                        value: item.value
+                        value: item.value,
+                        child: Text(jsonDecode(item.title)[Localizations.localeOf(context).languageCode].toString())
                       );
                     }).toList(),
                     value: _genderValue,
@@ -174,7 +135,7 @@ class _NewAnimalState extends State<NewAnimal> {
                       setState((){
                         _genderValue=value;
                       });
-                      genderController.text=value;
+                      genderController.text=value ?? '';
                       // _changeFieldFocus(_motherFocus);
                     },
                     focus: _genderFocus,
@@ -182,11 +143,13 @@ class _NewAnimalState extends State<NewAnimal> {
                   SizedBox(height: 20,),
                   Builder(
                     builder: (context){
-                      return RaisedButton(
-                        color: Theme.of(context).primaryColor,
-                        padding: EdgeInsets.all(15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)
+                      return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          padding: EdgeInsets.all(15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                          ),
                         ),
                         onPressed: () async {
 
@@ -194,7 +157,7 @@ class _NewAnimalState extends State<NewAnimal> {
 
                           var body=<String, dynamic>{
                             "tagNo":tagController.text,
-                            "birthDate": Language.isRtl(context) ?  PersianDateTime(jalaaliDateTime: birthController.text).toGregorian():birthController.text,
+                            "birthDate": DateUtil.toGregorianString(birthController.text, context),
                             "gender":genderController.text,
                             "mother":motherController.text,
                             "inseminator":inserminatorController.text,
@@ -203,27 +166,17 @@ class _NewAnimalState extends State<NewAnimal> {
 
                           
                           
-                          var response;
-                          if(widget.livestock!=null){
-                            response=await _livestockRepository.putLivestock(widget.livestock.id,jsonEncode(body));
-                          }else{
-                            response=await _livestockRepository.postLivestock(jsonEncode(body));
-                          }
+                          final Response<dynamic> response=await _livestockRepository.putLivestock(widget.livestock?.id,jsonEncode(body));
+                          if(!context.mounted) return;
 
                           if(response.status==Status.COMPLETED){
-                            if(widget.livestock!=null){
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => Detail(livestock: response.data,)));
-                            }else{
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Detail(livestock: response.data,)));
-                            }
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => Detail(livestock: response.data,)));
                             
                           }else{
-                            Scaffold
-                              .of(context)
-                              .showSnackBar(SnackBar(
-                                  content: Text(response.message,style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text(response.message ?? '',style: TextStyle(color: Colors.white,fontFamily: "Iran_Sans"),),
                                   behavior: SnackBarBehavior.floating,
                                   backgroundColor: Colors.red,
                                 )
@@ -237,7 +190,7 @@ class _NewAnimalState extends State<NewAnimal> {
                           //       .showSnackBar(SnackBar(content: Text('Processing Data')));
                           // }
                         },
-                        child: Text(AppLocalizations.of(context).new_animal_save,style: Theme.of(context).textTheme.button),
+                        child: Text(AppLocalizations.of(context)!.new_animal_save,style: Theme.of(context).textTheme.labelLarge),
                       );
                     }
                   )
@@ -252,7 +205,7 @@ class _NewAnimalState extends State<NewAnimal> {
   }
 
   _changeFieldFocus(FocusNode nextFocus){
-    currentFocus.unfocus();
+    currentFocus?.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);  
     setState(() {
       currentFocus=nextFocus;

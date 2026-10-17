@@ -3,7 +3,7 @@ import 'package:cattle/utils/api/ApiProvider.dart';
 import 'package:cattle/utils/api/Response.dart';
 
 class DashboardRespository{
-  ApiProvider _apiProvider=ApiProvider();
+  final ApiProvider _apiProvider=ApiProvider();
 
   Future<Response> getDashboard()async{
     try{

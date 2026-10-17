@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 
 class SettingsProvider extends ChangeNotifier{
   static final SettingsProvider _instance= SettingsProvider._internal();
-  SettingsData _data;
+  SettingsData? _data;
 
 
   SettingsProvider._internal();
@@ -18,14 +18,14 @@ class SettingsProvider extends ChangeNotifier{
   }
 
   SettingsData getSettings(){
-    return _data;
+    return _data ?? SettingsData();
   }
   
 }
 
 class SettingsData{
-  List<SettingValueTitle> livestockState;
-  List<SettingValueTitle> livestockType;
+  List<SettingValueTitle>? livestockState;
+  List<SettingValueTitle>? livestockType;
 
   SettingsData({this.livestockState,this.livestockType});
 

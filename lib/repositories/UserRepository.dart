@@ -5,7 +5,7 @@ import 'package:cattle/utils/api/CustomException.dart';
 import 'package:cattle/utils/api/Response.dart';
 
 class UserRepository{
-  ApiProvider _provider = ApiProvider();
+  final ApiProvider _provider = ApiProvider();
 
   Future<Response> getMe()async{
 
@@ -16,7 +16,7 @@ class UserRepository{
       return Response.error(e.toString());
     }catch ( e){
       print(e);
-      return null;
+      return Response.error(e.toString());
       
     }
   }

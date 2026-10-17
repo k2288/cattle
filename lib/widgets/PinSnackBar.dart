@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class PinSnackBar {
 
   final String _text;
-  final Duration _duration=Duration(seconds: 4);
+  final Duration _duration;
 
-  PinSnackBar(this._text,[_duration,]);
+  PinSnackBar(this._text,[this._duration = const Duration(seconds: 4)]);
 
   SnackBar get(){
     return SnackBar(

@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 
 class DropDown extends StatelessWidget {
-  final String value;
+  final String? value;
   final String hint;
-  
-  final List<DropdownMenuItem<String>> items;
-  final Function onChanged;
 
-  final focus;
-  final Function changeFieldFocus;
+  final List<DropdownMenuItem<String>> items;
+  final ValueChanged<String?> onChanged;
+
+  final FocusNode? focus;
+  final Function? changeFieldFocus;
 
   const DropDown(
-      {Key key,
+      {super.key,
       this.value,
-      this.hint,
-      this.items,
-      this.onChanged,
+      required this.hint,
+      required this.items,
+      required this.onChanged,
       this.focus,
       this.changeFieldFocus
-      })
-      : super(key: key);
+      });
 
   @override
   Widget build(BuildContext context) {
